@@ -430,7 +430,7 @@ export default function InventoryExplorer() {
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 1001,
-                display: mobileMapOpen || !initialView ? 'flex' : 'none', // Hide on desktop list unless map is visible
+                display: (mobileMapOpen || viewMode === 'split') ? 'flex' : 'none',
                 flexDirection: 'column-reverse',
                 gap: '8px',
                 pointerEvents: 'none',
