@@ -2,6 +2,7 @@ import React from 'react';
 import { Aircraft } from '@/types';
 import { X, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     selectedAircraft: Aircraft[];
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export default function ComparisonModal({ selectedAircraft, onClose, onRemove }: Props) {
+    const router = useRouter();
+    
     if (selectedAircraft.length === 0) return null;
 
     // Defined rows for comparison with preference indicators
@@ -65,14 +68,17 @@ export default function ComparisonModal({ selectedAircraft, onClose, onRemove }:
                 overflow: 'hidden', animation: 'modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
             }}>
                 {/* Header */}
-                <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--bg-tertiary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)' }}>
-                    <div>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-outfit)' }}>Comparison Analysis</h2>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Comparing {selectedAircraft.length} aircraft models</p>
+                <div style={{ borderBottom: '1px solid var(--bg-tertiary)', background: 'var(--bg-primary)' }}>
+                    <div style={{ height: '4px', background: 'linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%)' }} />
+                    <div style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-outfit)', letterSpacing: '-0.02em' }}>Comparison Analysis</h2>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Comparing {selectedAircraft.length} aircraft models</p>
+                        </div>
+                        <button onClick={onClose} style={{ background: 'var(--bg-tertiary)', border: 'none', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)', transition: 'all 0.2s' }}>
+                            <X size={20} />
+                        </button>
                     </div>
-                    <button onClick={onClose} style={{ background: 'var(--bg-tertiary)', border: 'none', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)', transition: 'all 0.2s' }}>
-                        <X size={20} />
-                    </button>
                 </div>
 
                 {/* Content - Scrollable Horizontal */}
@@ -94,6 +100,15 @@ export default function ComparisonModal({ selectedAircraft, onClose, onRemove }:
                                     {row.label}
                                 </div>
                             ))}
+                            {/* Action Row Label */}
+                            <div style={{ 
+                                padding: '1.5rem 0', 
+                                fontWeight: 700, color: 'var(--text-muted)',
+                                display: 'flex', alignItems: 'center', height: '80px',
+                                fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em'
+                            }}>
+                                Actions
+                            </div>
                         </div>
 
                         {/* Aircraft Columns */}
@@ -159,6 +174,45 @@ export default function ComparisonModal({ selectedAircraft, onClose, onRemove }:
                                         </div>
                                     );
                                 })}
+                                
+                                {/* View Details Button Row */}
+                                <div style={{ 
+                                    padding: '1.5rem', 
+                                    height: '80px', 
+                                    display: 'flex', 
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    <button
+                                        onClick={() => {
+                                            router.push(`/inventory/${ac.id}`);
+                                            onClose();
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem 1.5rem',
+                                            background: 'var(--primary)',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '12px',
+                                            fontWeight: 700,
+                                            fontSize: '0.9rem',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform = 'translateY(-2px)';
+                                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(14, 165, 233, 0.4)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform = 'translateY(0)';
+                                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(14, 165, 233, 0.3)';
+                                        }}
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>

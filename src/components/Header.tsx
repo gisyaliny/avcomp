@@ -45,13 +45,13 @@ export default function Header() {
         }}>
             {/* Logo */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                <Link href="/" className="logo-text" style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
-                    <div style={{ width: '24px', height: '24px', background: 'var(--primary)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M22 2L2 8.6L11.4 12.6L15.4 22L22 2Z" />
+                <Link href="/" className="logo-text" style={{ fontSize: '1.3rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-primary)', fontFamily: 'var(--font-outfit)', letterSpacing: '-0.02em' }}>
+                    <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent-dark) 100%)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(124, 98, 61, 0.2)' }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
                         </svg>
                     </div>
-                    AvComp
+                    <span style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent-dark) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>AvComp</span>
                 </Link>
 
                 <div className="nav-controls-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-primary)', padding: '4px', borderRadius: '12px', border: '1px solid var(--bg-tertiary)' }}>

@@ -29,6 +29,7 @@ function RangeCircle({ center, radius, color }: { center: [number, number], radi
 
     return (
          <Circle 
+            ref={circleRef}
             center={center}
             radius={radius}
             pathOptions={{ 
@@ -38,7 +39,21 @@ function RangeCircle({ center, radius, color }: { center: [number, number], radi
                 weight: 2, 
                 dashArray: '5, 5' 
             }}
-        />
+        >
+            <Popup>
+                <div style={{ textAlign: 'center', padding: '0.5rem' }}>
+                    <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem', color: color }}>
+                        Flight Range
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#666' }}>
+                        {(radius / 1852).toFixed(0)} NM
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.25rem' }}>
+                        Click an aircraft card to view its maximum range
+                    </div>
+                </div>
+            </Popup>
+        </Circle>
     )
 }
 
@@ -102,8 +117,8 @@ const createPriceMarker = (price: number, isSelected: boolean) => {
             borderRadius: '999px',
             fontWeight: 700,
             fontSize: '11px',
-            boxShadow: isSelected ? '0 4px 12px rgba(14, 165, 233, 0.4)' : '0 2px 8px rgba(0,0,0,0.12)',
-            border: isSelected ? '1px solid #0EA5E9' : '1px solid rgba(0,0,0,0.05)',
+            boxShadow: isSelected ? '0 4px 12px rgba(124, 98, 61, 0.4)' : '0 2px 8px rgba(0,0,0,0.12)',
+            border: isSelected ? '1px solid #7C623D' : '1px solid rgba(0,0,0,0.05)',
             whiteSpace: 'nowrap',
             display: 'flex',
             alignItems: 'center',

@@ -131,17 +131,6 @@ const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare,
                 {/* Actions */}
                 <td className={tableStyles.td} style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
-                         <button 
-                            onClick={(e) => { e.stopPropagation(); onCompare(aircraft.id); }}
-                            className={tableStyles.actionBtn}
-                            style={{ 
-                                width: '100%',
-                                background: isCompared ? 'var(--primary)' : undefined, 
-                                color: isCompared ? 'white' : undefined 
-                            }}
-                         >
-                            {isCompared ? 'Added' : '+ Compare'}
-                         </button>
                          <Link href={`/inventory/${aircraft.id}`} style={{ width: '100%', textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
                             <button className={tableStyles.actionBtn} style={{ width: '100%', background: 'transparent', color: 'var(--text-primary)', border: '1px solid var(--bg-tertiary)' }}>
                                 Details &rarr;

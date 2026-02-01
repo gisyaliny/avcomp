@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { MOCK_AIRCRAFT } from '@/lib/mockData';
 import styles from './AircraftDetail.module.css';
 import ContactModal from '@/components/ContactModal';
 import LoginModal from '@/components/LoginModal';
 import { Share, Heart, ArrowLeft, Download, Check, X, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
+import { useUI } from '@/components/UIContext';
+import ComparisonModal from '@/components/ComparisonModal';
 import { Aircraft } from '@/types';
 
 const formatCurrency = (val: number) => {
@@ -27,7 +29,10 @@ export default function AircraftDetailClient({ id }: { id: string }) {
     const [selectedImgIndex, setSelectedImgIndex] = useState<number | null>(null);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [shareNotification, setShareNotification] = useState(false);
+    const [showComparison, setShowComparison] = useState(false);
     const { user, toggleFavorite, isAuthenticated } = useAuth();
+    const { compareList, toggleCompare, setCompareList } = useUI();
+    const router = useRouter();
 
     // Track scroll for "Back to Top" button
     // Note: In our layout, the .main-content scrolls, not window
@@ -36,7 +41,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
         if (!mainContent) return;
 
         const handleScroll = () => {
-            if (mainContent.scrollTop > 400) {
+            if ((mainContent as HTMLElement).scrollTop > 400) {
                 setShowScrollTop(true);
             } else {
                 setShowScrollTop(false);
@@ -48,7 +53,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
     }, []);
 
     const scrollToTop = () => {
-        const mainContent = document.querySelector('.main-content');
+        const mainContent = document.querySelector('.main-content') as HTMLElement | null;
         if (mainContent) {
             mainContent.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -100,9 +105,9 @@ export default function AircraftDetailClient({ id }: { id: string }) {
         <main className={styles.container}>
             {/* Sticky Header Actions for Mobile/Tablet or just convenient access */}
             <div className={styles.stickyHeader}>
-                <Link href="/" className={styles.backBtn}>
+                <button onClick={() => router.back()} className={styles.backBtn}>
                     <ArrowLeft size={18} /> Back
-                </Link>
+                </button>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                      <span className={styles.stickyPrice}>{formatCurrency(aircraft.askPrice)}</span>
                      <button 
@@ -218,6 +223,32 @@ export default function AircraftDetailClient({ id }: { id: string }) {
                         >
                             Contact Seller
                         </button>
+                        <button 
+                            className={`${styles.outlineBtn} ${styles.fullWidth}`}
+                            onClick={() => toggleCompare(aircraft.id)}
+                            style={{ 
+                                background: compareList.includes(aircraft.id) ? 'var(--primary)' : 'transparent',
+                                color: compareList.includes(aircraft.id) ? 'white' : 'var(--text-primary)',
+                                border: compareList.includes(aircraft.id) ? 'none' : '1px solid var(--bg-tertiary)'
+                            }}
+                        >
+                            {compareList.includes(aircraft.id) ? (
+                                <><Check size={18} /> Added to Compare</>
+                            ) : (
+                                <>+ Add to Compare</>
+                            )}
+                        </button>
+                        
+                        {compareList.length > 0 && (
+                            <button 
+                                className={`${styles.outlineBtn} ${styles.fullWidth}`}
+                                onClick={() => setShowComparison(true)}
+                                style={{ marginTop: '0.5rem', borderStyle: 'dashed', borderColor: 'var(--primary)', color: 'var(--primary)' }}
+                            >
+                                View Comparison ({compareList.length})
+                            </button>
+                        )}
+
                         <button className={`${styles.outlineBtn} ${styles.fullWidth}`}>
                             <Download size={18} /> Download Brochure
                         </button>
@@ -266,6 +297,14 @@ export default function AircraftDetailClient({ id }: { id: string }) {
                 <div className={styles.shareToast}>
                     <Check size={16} /> Link copied to clipboard
                 </div>
+            )}
+
+            {showComparison && (
+                <ComparisonModal 
+                    selectedAircraft={MOCK_AIRCRAFT.filter(a => compareList.includes(a.id))} 
+                    onClose={() => setShowComparison(false)} 
+                    onRemove={toggleCompare}
+                />
             )}
 
             {/* Back to Top Button */}

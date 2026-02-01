@@ -10,6 +10,9 @@ interface UIContextType {
     setViewMode: (mode: ViewMode) => void;
     showFilters: boolean;
     setShowFilters: (show: boolean) => void;
+    compareList: string[];
+    setCompareList: React.Dispatch<React.SetStateAction<string[]>>;
+    toggleCompare: (id: string) => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -21,6 +24,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
 
     const [viewMode, setViewModeState] = useState<ViewMode>('split');
     const [showFilters, setShowFilters] = useState(false);
+    const [compareList, setCompareList] = useState<string[]>([]);
 
     // Initial sync from URL
     useEffect(() => {
@@ -46,10 +50,22 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const toggleCompare = (id: string) => {
+        setCompareList(prev => {
+            if (prev.includes(id)) return prev.filter(i => i !== id);
+            if (prev.length >= 4) {
+                alert("You can compare up to 4 aircraft.");
+                return prev;
+            }
+            return [...prev, id];
+        });
+    };
+
     return (
         <UIContext.Provider value={{ 
             viewMode, setViewMode, 
-            showFilters, setShowFilters
+            showFilters, setShowFilters,
+            compareList, setCompareList, toggleCompare
         }}>
             {children}
         </UIContext.Provider>

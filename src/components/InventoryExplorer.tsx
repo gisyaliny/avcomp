@@ -58,7 +58,7 @@ export default function InventoryExplorer() {
   const initialDestination = initialDestCode ? MAJOR_AIRPORTS.find(a => a.code === initialDestCode) : undefined;
 
   // State
-  const { viewMode, setViewMode, showFilters, setShowFilters } = useUI();
+  const { viewMode, setViewMode, showFilters, setShowFilters, compareList, setCompareList, toggleCompare } = useUI();
   const [origin, setOrigin] = useState<Airport>(initialOrigin);
   const [destination, setDestination] = useState<Airport | undefined>(initialDestination);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
@@ -68,7 +68,6 @@ export default function InventoryExplorer() {
   const [priceRange, setPriceRange] = useState(initialPrice);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(initialTypes);
   const [yearRange, setYearRange] = useState(initialYear);
-  const [compareList, setCompareList] = useState<string[]>(initialCompare);
   const [showComparison, setShowComparison] = useState(false); // UI state only
   const [sortConfig, setSortConfig] = useState<{ key: keyof Aircraft; direction: 'asc' | 'desc' } | null>(initialSort);
   const [selectedAircraftId, setSelectedAircraftId] = useState<string | undefined>(initialSelected);
@@ -115,17 +114,45 @@ export default function InventoryExplorer() {
 
   const toggleSelection = (id: string) => {
       setSelectedAircraftId(id);
-      setActiveRangeIds(prev => {
-          if (prev.includes(id)) return prev.filter(i => i !== id);
-          return [...prev, id];
-      });
+      
+      // Check current state to determine action
+      const isCurrentlyActive = activeRangeIds.includes(id);
+      
+      if (!isCurrentlyActive) {
+          // Activating: Add to both range and comparison
+          setActiveRangeIds(prev => [...prev, id]);
+          setCompareList(current => {
+              if (!current.includes(id) && current.length < 4) {
+                  return [...current, id];
+              }
+              return current;
+          });
+      } else {
+          // Deactivating: Remove from both range and comparison
+          setActiveRangeIds(prev => prev.filter(i => i !== id));
+          setCompareList(current => current.filter(i => i !== id));
+      }
   };
 
   const removeRange = (id: string) => {
       setActiveRangeIds(prev => prev.filter(i => i !== id));
+      setCompareList(current => current.filter(i => i !== id));
       if (selectedAircraftId === id) setSelectedAircraftId(undefined);
   };
+
+  const clearAll = () => {
+      setActiveRangeIds([]);
+      setCompareList([]);
+      setSelectedAircraftId(undefined);
+  };
   
+  // Sync initialCompare to global state on mount
+  useEffect(() => {
+    if (initialCompare.length > 0 && compareList.length === 0) {
+        setCompareList(initialCompare);
+    }
+  }, []);
+
   const resetAll = () => {
       setOrigin(initialOrigin);
       setSearchTerm('');
@@ -135,24 +162,12 @@ export default function InventoryExplorer() {
       setPriceRange({ min: null, max: null });
       setSelectedTypes([]);
       setYearRange({ min: null, max: null });
-      setCompareList([]);
       setSortConfig(initialSort);
-      setSelectedAircraftId(undefined);
-      setActiveRangeIds([]);
       setDestination(undefined);
+      clearAll();
       // Optional: keep viewMode or reset it? User probably wants to keep view mode.
   };
 
-  const toggleCompare = (id: string) => {
-      setCompareList(prev => {
-          if (prev.includes(id)) return prev.filter(i => i !== id);
-          if (prev.length >= 4) {
-              alert("You can compare up to 4 aircraft.");
-              return prev;
-          }
-          return [...prev, id];
-      });
-  };
 
   const handleSort = (key: keyof Aircraft) => {
       setSortConfig(current => {
@@ -417,6 +432,87 @@ export default function InventoryExplorer() {
                 maxWidth: '400px',
                 alignItems: 'center'
             }}>
+                {/* Header Card with Clear All */}
+                <div style={{
+                    pointerEvents: 'auto',
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--bg-tertiary)',
+                    borderTop: '3px solid var(--primary)',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    boxShadow: 'var(--shadow-lg)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '1rem',
+                    width: '100%'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-outfit)' }}>
+                            {activeRangeIds.length} Selected for Comparison
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                            onClick={() => setShowComparison(true)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                padding: '0.5rem 0.75rem',
+                                background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent-dark) 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                boxShadow: '0 2px 8px rgba(124, 98, 61, 0.3)'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 98, 61, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(124, 98, 61, 0.3)';
+                            }}
+                        >
+                            View Comparison
+                        </button>
+                        <button
+                            onClick={clearAll}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                padding: '0.5rem 0.75rem',
+                                background: 'var(--danger)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                boxShadow: '0 2px 8px rgba(200, 75, 62, 0.3)'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(200, 75, 62, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(200, 75, 62, 0.3)';
+                            }}
+                        >
+                            <X size={14} /> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                {/* Individual Aircraft Cards */}
                 {activeRangeIds.map((id, index) => {
                     const ac = MOCK_AIRCRAFT.find(a => a.id === id);
                     if (!ac) return null;
@@ -479,7 +575,7 @@ export default function InventoryExplorer() {
         )}
       </section>
 
-      {/* List Panel (Right) - Adjust width based on view mode? Or simple content swap */}
+      {/* Comparison Modal */}
       {showComparison && (
           <ComparisonModal 
              selectedAircraft={MOCK_AIRCRAFT.filter(a => compareList.includes(a.id))}
@@ -488,25 +584,7 @@ export default function InventoryExplorer() {
           />
       )}
 
-      {compareList.length > 0 && !showComparison && (
-          <div style={{
-              position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
-              background: 'var(--primary)', color: 'white', padding: '0.75rem 1.5rem',
-              borderRadius: '50px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-              zIndex: 2000, display: 'flex', gap: '1rem', alignItems: 'center', cursor: 'pointer',
-              fontWeight: 600, fontSize: '0.9rem'
-          }} onClick={() => setShowComparison(true)}>
-              <span>Compare ({compareList.length}) Aircraft</span>
-              <div style={{ background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '12px', fontSize: '0.75rem' }}>View</div>
-              <button 
-                  onClick={(e) => { e.stopPropagation(); setCompareList([]); }}
-                  style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.7)', marginLeft: '0.5rem', cursor: 'pointer' }}
-              >
-                Clear
-              </button>
-          </div>
-      )}
-
+      {/* List Panel (Right) - Adjust width based on view mode? Or simple content swap */}
       <aside className={styles.listPanel} style={{ width: viewMode === 'table' ? '900px' : '450px', transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
         {/* Search & Header (Only show if not table view or if split) */}
         {viewMode === 'split' && (
@@ -586,27 +664,6 @@ export default function InventoryExplorer() {
                              display: 'flex', gap: '0.75rem',
                              boxShadow: 'var(--shadow-sm)'
                          }}>
-                            <button 
-                                 onClick={(e) => {
-                                     e.stopPropagation();
-                                     toggleCompare(aircraft.id);
-                                 }}
-                                 style={{ 
-                                     flex: 1,
-                                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                                     padding: '0.6rem', 
-                                     background: compareList.includes(aircraft.id) ? 'var(--primary)' : 'transparent', 
-                                     color: compareList.includes(aircraft.id) ? 'white' : 'var(--primary)',
-                                     border: '1px solid var(--primary)',
-                                     borderRadius: '8px',
-                                     fontSize: '0.85rem',
-                                     fontWeight: 600,
-                                     cursor: 'pointer',
-                                     transition: 'all 0.2s'
-                                 }}
-                            >
-                                {compareList.includes(aircraft.id) ? 'Compared' : '+ Compare'}
-                            </button>
                              <Link href={`/inventory/${aircraft.id}`} style={{ flex: 1, textDecoration: 'none' }}>
                                 <button style={{ width: '100%', padding: '0.6rem', background: 'var(--bg-primary)', border: '1px solid var(--bg-tertiary)', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)' }}>
                                     View Details
