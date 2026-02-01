@@ -94,15 +94,19 @@ export default function InventoryExplorer() {
       if (selectedAircraftId) params.set('sel', selectedAircraftId);
       if (activeRangeIds.length > 0) params.set('ranges', activeRangeIds.join(','));
 
-      const newUrl = `${pathname}?${params.toString()}`;
+      const newParamsString = params.toString();
+      const currentParamsString = searchParams.toString();
       
-      // Debounce update to avoid thrashing history on slider drag
+      if (newParamsString === currentParamsString) return;
+
+      const newUrl = `${pathname}${newParamsString ? '?' + newParamsString : ''}`;
+      
       const timeoutId = setTimeout(() => {
          router.replace(newUrl, { scroll: false });
       }, 500);
 
       return () => clearTimeout(timeoutId);
-  }, [viewMode, origin, searchTerm, selectedMake, minRange, minPax, priceRange, selectedTypes, yearRange, compareList, sortConfig, selectedAircraftId, activeRangeIds, pathname, router]);
+  }, [viewMode, origin, searchTerm, selectedMake, minRange, minPax, priceRange, selectedTypes, yearRange, compareList, sortConfig, selectedAircraftId, activeRangeIds, pathname, router, searchParams]);
 
   const toggleSelection = (id: string) => {
       setSelectedAircraftId(id);
@@ -462,9 +466,16 @@ export default function InventoryExplorer() {
                             animation: 'slideUp 0.3s ease-out'
                         }}>
                             <div style={{ overflow: 'hidden' }}>
-                                <div style={{ fontSize: '0.65rem', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fly Range</div>
-                                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ac.model}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Max: {ac.rangeNm.toLocaleString()} NM</div>
+                                <div style={{ fontSize: '0.65rem', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Flight Capabilities</div>
+                                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ac.make} {ac.model}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <MapPin size={10} style={{ color }} /> {ac.rangeNm.toLocaleString()} NM from {origin.name} ({origin.code})
+                                    </div>
+                                    <div style={{ fontSize: '0.65rem', opacity: 0.8 }}>
+                                        Est. Endurance: {Math.floor(ac.rangeNm / (ac.specs?.performance?.maxCruiseSpeed || 450))}h {Math.round((ac.rangeNm / (ac.specs?.performance?.maxCruiseSpeed || 450) % 1) * 60)}m
+                                    </div>
+                                </div>
                             </div>
                             <button 
                                 onClick={() => removeRange(id)}

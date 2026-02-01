@@ -26,6 +26,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
 
     // Sync viewMode with URL
     const setViewMode = (mode: ViewMode) => {
+        if (mode === viewMode) return;
         setViewModeState(mode);
         const params = new URLSearchParams(searchParams.toString());
         if (mode === 'split') {
@@ -33,7 +34,10 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         } else {
             params.set('view', mode);
         }
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        const newUrl = `${pathname}${params.toString() ? '?' + params.toString() : ''}`;
+        if (newUrl !== pathname + (searchParams.toString() ? '?' + searchParams.toString() : '')) {
+            router.replace(newUrl, { scroll: false });
+        }
     };
 
     return (
