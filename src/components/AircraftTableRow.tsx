@@ -15,11 +15,21 @@ interface Props {
 
     sortKey?: string;
     isTable?: boolean;
+    route?: {
+        distance: number;
+        originCode: string;
+        destCode: string;
+    }
 }
 
-const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare, sortKey, isTable = false }: Props) => {
+const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare, sortKey, isTable = false, route }: Props) => {
     const { user, toggleFavorite } = useAuth();
     const isFavorite = user?.favorites.includes(aircraft.id);
+
+    const cruiseSpeed = aircraft.specs?.performance?.maxCruiseSpeed || 450;
+    const flyTimeHours = route ? route.distance / cruiseSpeed : 0;
+    const hours = Math.floor(flyTimeHours);
+    const minutes = Math.round((flyTimeHours - hours) * 60);
 
     const handleFavoriteClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -95,9 +105,15 @@ const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare,
                     </span>
                 </td>
 
-                {/* Endurance */}
+                {/* Endurance / Fly Time */}
                 <td className={tableStyles.td}>
-                    {aircraft.specs?.performance.typicalEndurance || 'TBD'}
+                    {route ? (
+                        <div style={{ color: 'var(--primary)', fontWeight: 700 }}>
+                            {hours > 0 ? `${hours}h ` : ''}{minutes}m
+                        </div>
+                    ) : (
+                        aircraft.specs?.performance.typicalEndurance || 'TBD'
+                    )}
                 </td>
 
                 {/* Passengers */}
@@ -176,9 +192,13 @@ const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare,
                     ${(aircraft.askPrice / 1000000).toFixed(2)}M
                 </div>
 
-                {/* Endurance */}
-                 <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-                    {aircraft.specs?.performance.typicalEndurance || 'TBD'}
+                {/* Endurance / Fly Time */}
+                 <div style={{ fontSize: '0.85rem', color: route ? 'var(--primary)' : 'var(--text-primary)', fontWeight: route ? 700 : 400 }}>
+                    {route ? (
+                        `${hours > 0 ? `${hours}h ` : ''}${minutes}m`
+                    ) : (
+                        aircraft.specs?.performance.typicalEndurance || 'TBD'
+                    )}
                 </div>
 
                 {/* Passengers */}

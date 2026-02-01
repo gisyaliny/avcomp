@@ -19,6 +19,7 @@ import ComparisonModal from "@/components/ComparisonModal";
 import BasemapGallery from "@/components/BasemapGallery";
 import { useAuth } from "@/components/AuthContext";
 import { useUI } from './UIContext';
+import { calculateDistanceNm } from '@/lib/distance';
 
 export default function InventoryExplorer() {
   const { user, saveSearch } = useAuth();
@@ -26,37 +27,40 @@ export default function InventoryExplorer() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  // Initialize state from URL
-  const initialView = (searchParams.get('view') as 'split' | 'table') || 'split';
-  const initialOrigin = MAJOR_AIRPORTS.find(a => a.code === searchParams.get('origin')) || MAJOR_AIRPORTS[0];
-  const initialSearch = searchParams.get('q') || '';
-  const initialMake = searchParams.get('make') || 'All Makes';
-  const initialMinRange = Number(searchParams.get('minRange')) || 0;
+  // Initialize default states safely (may be overridden by useEffect on mount)
+  const initialView = searchParams?.get('view') as 'split' | 'table' || 'split';
+  const initialOrigin = (searchParams && MAJOR_AIRPORTS.find(a => a.code === searchParams.get('origin'))) || MAJOR_AIRPORTS[0];
+  const initialSearch = searchParams?.get('q') || '';
+  const initialMake = searchParams?.get('make') || 'All Makes';
+  const initialMinRange = Number(searchParams?.get('minRange')) || 0;
   
-  const pMin = searchParams.get('pMin');
-  const pMax = searchParams.get('pMax');
+  const pMin = searchParams?.get('pMin');
+  const pMax = searchParams?.get('pMax');
   const initialPrice = { min: pMin ? Number(pMin) : null, max: pMax ? Number(pMax) : null };
 
-  const initialTypes = searchParams.get('types')?.split(',').filter(Boolean) || [];
+  const initialTypes = searchParams?.get('types')?.split(',').filter(Boolean) || [];
   
-  const yMin = searchParams.get('yMin');
-  const yMax = searchParams.get('yMax');
+  const yMin = searchParams?.get('yMin');
+  const yMax = searchParams?.get('yMax');
   const initialYear = { min: yMin ? Number(yMin) : null, max: yMax ? Number(yMax) : null };
 
-  const initialCompare = searchParams.get('compare')?.split(',').filter(Boolean) || [];
+  const initialCompare = searchParams?.get('compare')?.split(',').filter(Boolean) || [];
 
-  const sortKey = searchParams.get('sortKey') as keyof Aircraft;
-  const sortDir = searchParams.get('sortDir') as 'asc' | 'desc';
+  const sortKey = searchParams?.get('sortKey') as keyof Aircraft;
+  const sortDir = searchParams?.get('sortDir') as 'asc' | 'desc';
   const initialSort = sortKey ? { key: sortKey, direction: sortDir || 'asc' } : null;
 
-  const initialRanges = searchParams.get('ranges')?.split(',').filter(Boolean) || [];
-  const initialSelected = searchParams.get('sel') || (initialRanges.length > 0 ? initialRanges[0] : undefined);
+  const initialRanges = searchParams?.get('ranges')?.split(',').filter(Boolean) || [];
+  const initialSelected = searchParams?.get('sel') || (initialRanges.length > 0 ? initialRanges[0] : undefined);
 
-  const initialMinPax = Number(searchParams.get('minPax')) || 0;
+  const initialMinPax = Number(searchParams?.get('minPax')) || 0;
+  const initialDestCode = searchParams?.get('dest');
+  const initialDestination = initialDestCode ? MAJOR_AIRPORTS.find(a => a.code === initialDestCode) : undefined;
 
   // State
   const { viewMode, setViewMode, showFilters, setShowFilters } = useUI();
   const [origin, setOrigin] = useState<Airport>(initialOrigin);
+  const [destination, setDestination] = useState<Airport | undefined>(initialDestination);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedMake, setSelectedMake] = useState<string>(initialMake);
   const [minRange, setMinRange] = useState<number>(initialMinRange);
@@ -93,6 +97,7 @@ export default function InventoryExplorer() {
       }
       if (selectedAircraftId) params.set('sel', selectedAircraftId);
       if (activeRangeIds.length > 0) params.set('ranges', activeRangeIds.join(','));
+      if (destination) params.set('dest', destination.code);
 
       const newParamsString = params.toString();
       const currentParamsString = searchParams.toString();
@@ -134,6 +139,7 @@ export default function InventoryExplorer() {
       setSortConfig(initialSort);
       setSelectedAircraftId(undefined);
       setActiveRangeIds([]);
+      setDestination(undefined);
       // Optional: keep viewMode or reset it? User probably wants to keep view mode.
   };
 
@@ -163,6 +169,11 @@ export default function InventoryExplorer() {
      return ['All Makes', ...makes.sort()];
   }, []);
   
+  const routeDistance = useMemo(() => {
+    if (!destination) return null;
+    return calculateDistanceNm(origin.lat, origin.lng, destination.lat, destination.lng);
+  }, [origin, destination]);
+
   const maxFleetRange = useMemo(() => Math.max(...MOCK_AIRCRAFT.map(a => a.rangeNm || 0)), []);
 
   const filteredAircraft = useMemo(() => {
@@ -218,23 +229,28 @@ export default function InventoryExplorer() {
         {/* Floating Filters Bar on Map */}
         <div className={styles.mapControls}>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
-                {/* Departure Filter - Pointer Events Auto */}
-                <div style={{ pointerEvents: 'auto', background: 'var(--bg-secondary)', padding: '0 1rem', borderRadius: '999px', border: '1px solid var(--bg-tertiary)', boxShadow: 'var(--shadow-md)', display: 'flex', alignItems: 'center', gap: '8px', height: '48px', transition: 'all 0.2s' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>DEPARTURE</div>
-                    <select 
-                        style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.9rem', outline: 'none', cursor: 'pointer', maxWidth: '160px' }}
-                        value={origin.code}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            if (val !== 'GPS') {
-                                setOrigin(MAJOR_AIRPORTS.find(a => a.code === val) || origin);
-                            }
-                        }}
-                    >
-                        {MAJOR_AIRPORTS.map(a => (
-                            <option key={a.code} value={a.code}>{a.name} ({a.code})</option>
-                        ))}
-                    </select>
+                {/* Current Route Indicator */}
+                <div 
+                    onClick={() => router.push(`/mission?origin=${origin.code}${destination ? `&dest=${destination.code}` : ''}`)}
+                    style={{ 
+                        pointerEvents: 'auto', background: 'var(--bg-secondary)', padding: '0 1.25rem', borderRadius: '999px', border: '1px solid var(--bg-tertiary)', 
+                        boxShadow: 'var(--shadow-md)', display: 'flex', alignItems: 'center', gap: '12px', height: '48px', cursor: 'pointer',
+                        transition: 'all 0.2s' 
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--bg-tertiary)'}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ width: '8px', height: '8px', background: 'var(--primary)', borderRadius: '50%' }} />
+                        <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{origin.code}</span>
+                    </div>
+                    <ArrowDown size={14} style={{ transform: 'rotate(-90deg)', color: 'var(--text-muted)' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ width: '8px', height: '8px', background: destination ? 'var(--secondary)' : 'var(--bg-tertiary)', borderRadius: '50%' }} />
+                        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: destination ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                            {destination ? destination.code : 'SELECT DEST'}
+                        </span>
+                    </div>
                 </div>
                 
                 {/* Basemap Gallery - Tablet/Mobile Hide for compactness */}
@@ -258,60 +274,6 @@ export default function InventoryExplorer() {
                     </select>
                     <ChevronDown size={14} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }} />
                 </div>
-
-                <button 
-                    onClick={resetAll}
-                    style={{ 
-                        pointerEvents: 'auto', height: '48px', 
-                        background: 'var(--bg-primary)', 
-                        color: 'var(--text-muted)', 
-                        border: '1px solid var(--bg-tertiary)', 
-                        borderRadius: '999px',
-                        padding: '0 1rem',
-                        cursor: 'pointer',
-                        fontWeight: 600,
-                        fontSize: '0.8rem',
-                        display: 'flex', alignItems: 'center', gap: '6px',
-                        boxShadow: 'var(--shadow-md)'
-                    }}
-                >
-                    <RefreshCcw size={14} /> Clear All
-                </button>
-
-                {/* Save Search Button */}
-                <button 
-                    onClick={() => {
-                        if (!user) {
-                             alert("Please log in to save searches.");
-                             return;
-                        }
-                        const name = prompt("Name this search:", `${selectedMake} Aircraft`);
-                        if (name) {
-                            saveSearch(name, {
-                                make: selectedMake,
-                                q: searchTerm,
-                                minRange: minRange.toString(),
-                                minPax: minPax.toString(),
-                            });
-                            alert("Search saved!");
-                        }
-                    }}
-                    style={{ 
-                        pointerEvents: 'auto', height: '48px', 
-                        background: 'var(--bg-primary)', 
-                        color: 'var(--primary)', 
-                        border: '1px solid var(--primary)', 
-                        borderRadius: '999px',
-                        padding: '0 1rem',
-                        cursor: 'pointer',
-                        fontWeight: 600,
-                        fontSize: '0.8rem',
-                        display: 'flex', alignItems: 'center', gap: '6px',
-                        boxShadow: 'var(--shadow-md)'
-                    }}
-                >
-                    <Save size={14} /> Save
-                </button>
             </div>
         </div>
         
@@ -327,12 +289,13 @@ export default function InventoryExplorer() {
                     maxHeight: 'calc(100% - 2rem)', overflowY: 'auto'
                 }}
             >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                     <h3 style={{ fontSize: '1rem', fontWeight: 600 }}>Filters</h3>
-                     <button onClick={() => setShowFilters(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                        <X size={18} />
-                    </button>
-                </div>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Advanced Search</h2>
+                      <button onClick={() => setShowFilters(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+                         <X size={20} />
+                     </button>
+                 </div>
+
 
                 {/* Type Filter */}
                 <TypeFilter 
@@ -399,19 +362,31 @@ export default function InventoryExplorer() {
                      </div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1.5rem', borderTop: '2px solid var(--bg-tertiary)' }}>
                     <button 
                         onClick={resetAll}
-                        style={{ padding: '0.5rem 1rem', background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.875rem' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: 'transparent', border: '1px solid var(--bg-tertiary)', borderRadius: '8px', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}
                     >
-                        Reset
+                        <RefreshCcw size={16} /> Clear All
                     </button>
-                    <button 
-                        onClick={() => setShowFilters(false)}
-                        style={{ padding: '0.5rem 1.5rem', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.875rem' }}
-                    >
-                        Done
-                    </button>
+                    
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                        <button 
+                            onClick={() => {
+                                saveSearch("Saved Search", { q: searchTerm, make: selectedMake });
+                                alert("Search saved successfully!");
+                            }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: 'var(--bg-primary)', border: '1px solid var(--bg-tertiary)', borderRadius: '8px', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600 }}
+                        >
+                            <Save size={16} /> Save
+                        </button>
+                        <button 
+                            onClick={() => setShowFilters(false)}
+                            style={{ padding: '0.6rem 2rem', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.875rem', boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)' }}
+                        >
+                            Apply Filters
+                        </button>
+                    </div>
                 </div>
             </div>
         )}
@@ -666,7 +641,7 @@ export default function InventoryExplorer() {
                                         Price {renderSortIcon('askPrice')}
                                     </div>
                                 </th>
-                                <th className={tableStyles.th}>Endurance</th>
+                                <th className={tableStyles.th}>{destination ? 'FT (Mission)' : 'Endurance'}</th>
                                 <th className={tableStyles.th}>Passengers</th>
                                 <th className={`${tableStyles.th} ${sortConfig?.key === 'rangeNm' ? tableStyles.sorted : ''}`} onClick={() => handleSort('rangeNm')}>
                                     <div style={{display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', color: 'inherit'}}>
@@ -687,6 +662,11 @@ export default function InventoryExplorer() {
                                     onCompare={toggleCompare}
                                     sortKey={sortConfig?.key}
                                     isTable={true}
+                                    route={routeDistance ? {
+                                        distance: routeDistance,
+                                        originCode: origin.code,
+                                        destCode: destination!.code
+                                    } : undefined}
                                 />
                             ))}
                         </tbody>

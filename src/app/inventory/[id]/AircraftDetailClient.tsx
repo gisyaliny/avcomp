@@ -7,7 +7,8 @@ import { notFound } from 'next/navigation';
 import { MOCK_AIRCRAFT } from '@/lib/mockData';
 import styles from './AircraftDetail.module.css';
 import ContactModal from '@/components/ContactModal';
-import { Share, Heart, ArrowLeft, Download, Check } from 'lucide-react';
+import LoginModal from '@/components/LoginModal';
+import { Share, Heart, ArrowLeft, Download, Check, X, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 import { Aircraft } from '@/types';
 
@@ -22,7 +23,36 @@ const formatCurrency = (val: number) => {
 export default function AircraftDetailClient({ id }: { id: string }) {
     const aircraft = MOCK_AIRCRAFT.find((a) => a.id === id);
     const [showContact, setShowContact] = useState(false);
-    const { user, toggleFavorite } = useAuth();
+    const [showLogin, setShowLogin] = useState(false);
+    const [selectedImgIndex, setSelectedImgIndex] = useState<number | null>(null);
+    const [showScrollTop, setShowScrollTop] = useState(false);
+    const [shareNotification, setShareNotification] = useState(false);
+    const { user, toggleFavorite, isAuthenticated } = useAuth();
+
+    // Track scroll for "Back to Top" button
+    // Note: In our layout, the .main-content scrolls, not window
+    React.useEffect(() => {
+        const mainContent = document.querySelector('.main-content');
+        if (!mainContent) return;
+
+        const handleScroll = () => {
+            if (mainContent.scrollTop > 400) {
+                setShowScrollTop(true);
+            } else {
+                setShowScrollTop(false);
+            }
+        };
+
+        mainContent.addEventListener('scroll', handleScroll);
+        return () => mainContent.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
     
     if (!aircraft) {
         notFound();
@@ -35,6 +65,36 @@ export default function AircraftDetailClient({ id }: { id: string }) {
     const similarAircraft = MOCK_AIRCRAFT
         .filter(a => a.id !== id && (a.make === aircraft.make || a.type === aircraft.type))
         .slice(0, 3);
+
+    const galleryImages = [
+        aircraft.mainImageUrl,
+        "https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=1000",
+        "https://images.unsplash.com/photo-1583068739943-73934f0d3b6f?auto=format&fit=crop&q=80&w=1000"
+    ];
+
+    const handlePrev = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSelectedImgIndex(prev => (prev === null || prev === 0) ? galleryImages.length - 1 : prev - 1);
+    };
+
+    const handleNext = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSelectedImgIndex(prev => (prev === null || prev === galleryImages.length - 1) ? 0 : prev + 1);
+    };
+
+    const handleFavoriteClick = () => {
+        if (!isAuthenticated) {
+            setShowLogin(true);
+            return;
+        }
+        if (aircraft) toggleFavorite(aircraft.id);
+    };
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setShareNotification(true);
+        setTimeout(() => setShareNotification(false), 2000);
+    };
 
     return (
         <main className={styles.container}>
@@ -57,7 +117,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
             {/* Main Hero Grid */}
             <div className={styles.heroGrid}>
                 {/* Main Hero Image */}
-                <div className={styles.heroMain}>
+                <div className={styles.heroMain} onClick={() => setSelectedImgIndex(0)}>
                     <Image 
                         src={aircraft.mainImageUrl} 
                         alt={`${aircraft.make} ${aircraft.model}`} 
@@ -74,14 +134,11 @@ export default function AircraftDetailClient({ id }: { id: string }) {
 
                 {/* Secondary Images (Simulated Gallery) */}
                 <div className={styles.heroSide}>
-                    <div className={styles.sideImg}>
-                        <Image src={aircraft.mainImageUrl} alt="Interior View" fill style={{ objectFit: 'cover' }} />
-                         {/* Overlay to simulate difference */}
-                         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.1)' }} />
+                    <div className={styles.sideImg} onClick={() => setSelectedImgIndex(1)}>
+                        <Image src={galleryImages[1]} alt="Interior View" fill style={{ objectFit: 'cover' }} />
                     </div>
-                    <div className={styles.sideImg}>
-                        <Image src={aircraft.mainImageUrl} alt="Cockpit View" fill style={{ objectFit: 'cover' }} />
-                        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.2)' }} />
+                    <div className={styles.sideImg} onClick={() => setSelectedImgIndex(2)}>
+                        <Image src={galleryImages[2]} alt="Cockpit View" fill style={{ objectFit: 'cover' }} />
                     </div>
                 </div>
             </div>
@@ -101,10 +158,10 @@ export default function AircraftDetailClient({ id }: { id: string }) {
                             </div>
                          </div>
                          <div className={styles.actionRow}>
-                             <button className={styles.iconBtn} onClick={() => toggleFavorite(aircraft.id)}>
+                             <button className={styles.iconBtn} onClick={handleFavoriteClick}>
                                  <Heart size={20} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#ef4444' : 'currentColor'} />
                              </button>
-                             <button className={styles.iconBtn} title="Share">
+                             <button className={styles.iconBtn} title="Share" onClick={handleShare}>
                                  <Share size={20} />
                              </button>
                          </div>
@@ -202,6 +259,57 @@ export default function AircraftDetailClient({ id }: { id: string }) {
             </div>
 
             {showContact && <ContactModal aircraftTitle={`${aircraft.yom} ${aircraft.make} ${aircraft.model}`} onClose={() => setShowContact(false)} />}
+            {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+
+            {/* Share Notification */}
+            {shareNotification && (
+                <div className={styles.shareToast}>
+                    <Check size={16} /> Link copied to clipboard
+                </div>
+            )}
+
+            {/* Back to Top Button */}
+            <button 
+                className={`${styles.scrollTopBtn} ${showScrollTop ? styles.visible : ''}`}
+                onClick={scrollToTop}
+                title="Back to Top"
+            >
+                <ArrowUp size={24} />
+            </button>
+
+            {/* Image Gallery / Lightbox Carousel */}
+            {selectedImgIndex !== null && (
+                <div 
+                    className={styles.lightbox}
+                    onClick={() => setSelectedImgIndex(null)}
+                >
+                    <button className={styles.closeLightbox} onClick={() => setSelectedImgIndex(null)}>
+                        <X size={32} />
+                    </button>
+
+                    <button className={styles.navBtnPrev} onClick={handlePrev}>
+                        <ChevronLeft size={48} />
+                    </button>
+
+                    <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
+                         <div className={styles.lightboxImgWrapper}>
+                            <Image 
+                                src={galleryImages[selectedImgIndex]} 
+                                alt="Gallery View" 
+                                fill 
+                                style={{ objectFit: 'contain' }} 
+                            />
+                         </div>
+                         <div className={styles.lightboxControls}>
+                            <span style={{ color: 'white', fontWeight: 600 }}>{selectedImgIndex + 1} / {galleryImages.length}</span>
+                         </div>
+                    </div>
+
+                    <button className={styles.navBtnNext} onClick={handleNext}>
+                        <ChevronRight size={48} />
+                    </button>
+                </div>
+            )}
         </main>
     );
 }

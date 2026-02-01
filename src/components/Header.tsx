@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useAuth } from './AuthContext';
 import ThemeToggle from './ThemeToggle';
-import { User, LogOut, Heart, Bookmark, Settings, ChevronDown, UserCircle, LayoutTemplate, Table as TableIcon, SlidersHorizontal, Menu } from 'lucide-react';
+import { User, LogOut, Heart, Bookmark, Settings, ChevronDown, UserCircle, LayoutTemplate, Table as TableIcon, SlidersHorizontal, Menu, MapPin } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import LoginModal from './LoginModal';
 import { useUI } from './UIContext';
 
@@ -17,6 +17,7 @@ export default function Header() {
     const [showLogin, setShowLogin] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const pathname = usePathname();
 
     // Close menus on click outside
     useEffect(() => {
@@ -90,6 +91,19 @@ export default function Header() {
                         }}
                     >
                         <SlidersHorizontal size={16} /> <span className="hide-on-tablet">Filters</span>
+                    </button>
+                    <div style={{ width: '1px', height: '20px', background: 'var(--bg-tertiary)', margin: '0 4px' }} />
+                    <button 
+                        onClick={() => router.push('/mission')}
+                        style={{ 
+                            padding: '0.5rem 1rem', 
+                            background: pathname === '/mission' ? 'var(--primary)' : 'transparent',
+                            color: pathname === '/mission' ? 'white' : 'var(--text-secondary)',
+                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <MapPin size={16} /> <span className="hide-on-tablet">Routine Planner</span>
                     </button>
                 </div>
             </div>
@@ -245,6 +259,9 @@ export default function Header() {
                         <div style={{ height: '1px', background: 'var(--bg-tertiary)', margin: '0.5rem 0' }} />
                         <button onClick={() => { setShowFilters(!showFilters); setIsMobileNavOpen(false); }} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: showFilters ? 'var(--primary)' : 'var(--bg-primary)', color: showFilters ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                             <SlidersHorizontal size={18} /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+                        </button>
+                        <button onClick={() => { router.push('/mission'); setIsMobileNavOpen(false); }} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: pathname === '/mission' ? 'var(--primary)' : 'var(--bg-primary)', color: pathname === '/mission' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <MapPin size={18} /> {pathname === '/mission' ? 'Active Planner' : 'Routine Planner'}
                         </button>
                     </div>
                 </div>

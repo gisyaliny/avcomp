@@ -19,29 +19,38 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
 
-    const [viewMode, setViewModeState] = useState<ViewMode>(
-        (searchParams.get('view') as ViewMode) || 'split'
-    );
+    const [viewMode, setViewModeState] = useState<ViewMode>('split');
     const [showFilters, setShowFilters] = useState(false);
+
+    // Initial sync from URL
+    useEffect(() => {
+        const mode = searchParams?.get('view') as ViewMode;
+        if (mode && (mode === 'split' || mode === 'table')) {
+            setViewModeState(mode);
+        }
+    }, [searchParams]);
 
     // Sync viewMode with URL
     const setViewMode = (mode: ViewMode) => {
         if (mode === viewMode) return;
         setViewModeState(mode);
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParams?.toString() || '');
         if (mode === 'split') {
             params.delete('view');
         } else {
             params.set('view', mode);
         }
         const newUrl = `${pathname}${params.toString() ? '?' + params.toString() : ''}`;
-        if (newUrl !== pathname + (searchParams.toString() ? '?' + searchParams.toString() : '')) {
+        if (newUrl !== pathname + (searchParams?.toString() ? '?' + searchParams.toString() : '')) {
             router.replace(newUrl, { scroll: false });
         }
     };
 
     return (
-        <UIContext.Provider value={{ viewMode, setViewMode, showFilters, setShowFilters }}>
+        <UIContext.Provider value={{ 
+            viewMode, setViewMode, 
+            showFilters, setShowFilters
+        }}>
             {children}
         </UIContext.Provider>
     );

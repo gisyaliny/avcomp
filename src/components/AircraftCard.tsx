@@ -9,6 +9,11 @@ interface Props {
   data: Aircraft;
   active?: boolean;
   onClick?: () => void;
+  route?: {
+      distance: number;
+      originCode: string;
+      destCode: string;
+  }
 }
 
 const formatCurrency = (val: number) => {
@@ -19,10 +24,15 @@ const formatCurrency = (val: number) => {
   }).format(val);
 };
 
-function AircraftCard({ data, active, onClick }: Props) {
+function AircraftCard({ data, active, onClick, route }: Props) {
   const { user, toggleFavorite } = useAuth();
   const isFavorite = user?.favorites.includes(data.id);
   
+  const cruiseSpeed = data.specs?.performance?.maxCruiseSpeed || 450;
+  const flyTimeHours = route ? route.distance / cruiseSpeed : 0;
+  const hours = Math.floor(flyTimeHours);
+  const minutes = Math.round((flyTimeHours - hours) * 60);
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
       e.stopPropagation();
       if (!user) {
@@ -42,7 +52,29 @@ function AircraftCard({ data, active, onClick }: Props) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className={styles.image}
          />
-         {/* Overlay gradient for text readability if needed */}
+         
+         {route && (
+             <div style={{
+                 position: 'absolute',
+                 top: '0.75rem',
+                 left: '0.75rem',
+                 background: 'var(--primary)',
+                 color: 'white',
+                 padding: '0.4rem 0.75rem',
+                 borderRadius: '8px',
+                 fontSize: '0.75rem',
+                 fontWeight: 700,
+                 boxShadow: '0 4px 12px rgba(14, 165, 233, 0.4)',
+                 display: 'flex',
+                 alignItems: 'center',
+                 gap: '6px',
+                 zIndex: 10
+             }}>
+                 <Clock size={14} />
+                 {hours > 0 ? `${hours}h ` : ''}{minutes}m
+             </div>
+         )}
+         
          <div style={{ 
              position: 'absolute', 
              bottom: 0, 
@@ -73,7 +105,6 @@ function AircraftCard({ data, active, onClick }: Props) {
                 transition: 'all 0.2s',
                 zIndex: 10
             }}
-            // Add hover effect via manual style or CSS module? Inline for speed.
             onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
          >
@@ -97,6 +128,13 @@ function AircraftCard({ data, active, onClick }: Props) {
              {data.base.split(',')[0]} • {data.rangeNm ? `${data.rangeNm.toLocaleString()} NM` : 'Range N/A'}
         </div>
 
+        {route && (
+            <div style={{ margin: '0.5rem 0', padding: '0.5rem', background: 'var(--bg-tertiary)', borderRadius: '6px', border: '1px dashed var(--primary)', fontSize: '0.75rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Missions:</span> <strong>{route.originCode} → {route.destCode}</strong>
+                <div style={{ color: 'var(--primary)', fontWeight: 600 }}>{route.distance.toFixed(0)} NM Distance</div>
+            </div>
+        )}
+
         <div className={styles.specs}>
             <div className={styles.specItem}>
                 <Clock size={14} />
@@ -108,7 +146,7 @@ function AircraftCard({ data, active, onClick }: Props) {
         </div>
 
         <div className={styles.badges}>
-            {data.highlights?.slice(0, 3).map((h, i) => (
+            {data.highlights?.slice(0, 2).map((h, i) => (
                 <span key={i} className={styles.badge}>{h}</span>
             ))}
         </div>

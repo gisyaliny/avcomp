@@ -2,20 +2,23 @@
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 1.5rem 2rem;
-    /* Reduced padding slightly */
     height: 100%;
     overflow-y: auto;
 }
 
-/* Sticky Header on scroll - optional interaction, 
-   for now just a top bar that might be sticky */
 .stickyHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
+    padding: 1rem 1.5rem;
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--bg-tertiary);
+    position: sticky;
+    top: 0;
+    background: var(--bg-primary);
+    z-index: 100;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
 }
 
 .stickyPrice {
@@ -44,13 +47,11 @@
     color: var(--primary);
 }
 
-/* Hero Grid Layout */
 .heroGrid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
     margin-bottom: 2rem;
-    height: auto;
 }
 
 @media (min-width: 768px) {
@@ -66,6 +67,8 @@
     overflow: hidden;
     height: 300px;
     background: var(--bg-tertiary);
+    cursor: pointer;
+    transition: opacity 0.2s;
 }
 
 @media (min-width: 768px) {
@@ -74,12 +77,15 @@
     }
 }
 
+.heroMain:hover {
+    opacity: 0.95;
+}
+
 .heroSide {
     display: grid;
     grid-template-rows: 1fr 1fr;
     gap: 1rem;
     display: none;
-    /* Hide on mobile by default */
 }
 
 @media (min-width: 768px) {
@@ -93,16 +99,12 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     background: var(--bg-tertiary);
+    cursor: pointer;
+    transition: opacity 0.2s;
 }
 
-.heroContent {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 2rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    color: white;
+.sideImg:hover {
+    opacity: 0.85;
 }
 
 .heroBadge {
@@ -118,7 +120,6 @@
     text-transform: uppercase;
 }
 
-/* Main Content Layout */
 .contentLayout {
     display: grid;
     grid-template-columns: 1fr;
@@ -226,7 +227,6 @@
     flex-shrink: 0;
 }
 
-/* Spec Tabs/Grids */
 .specCategory {
     font-size: 1rem;
     font-weight: 700;
@@ -264,11 +264,44 @@
     font-weight: 600;
 }
 
-/* Sidebar */
 .sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+}
+
+.scrollTopBtn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 200;
+}
+
+.scrollTopBtn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scrollTopBtn:hover {
+    background: var(--primary-hover);
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
 }
 
 .priceCard {
@@ -277,8 +310,6 @@
     border-radius: var(--radius-lg);
     padding: 1.5rem;
     box-shadow: var(--shadow-md);
-    position: sticky;
-    top: calc(var(--header-height) + 2rem);
 }
 
 .priceLabel {
@@ -395,7 +426,6 @@
     justify-content: space-between;
 }
 
-/* Similar Aircraft */
 .similarSection {
     margin-top: 4rem;
     padding-top: 2rem;
@@ -442,4 +472,171 @@
 .similarPrice {
     color: var(--primary);
     font-weight: 600;
+}
+
+/* Lightbox Styles */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(15px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.closeLightbox {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.2s;
+}
+
+.closeLightbox:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.lightboxContent {
+    width: 90%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightboxImgWrapper {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.lightboxControls {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.navBtnPrev,
+.navBtnNext {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10001;
+}
+
+.navBtnPrev:hover,
+.navBtnNext:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.navBtnPrev {
+    left: 2rem;
+}
+
+.navBtnNext {
+    right: 2rem;
+}
+
+@media (max-width: 768px) {
+
+    .navBtnPrev,
+    .navBtnNext {
+        width: 48px;
+        height: 48px;
+    }
+
+    .navBtnPrev {
+        left: 0.5rem;
+    }
+
+    .navBtnNext {
+        right: 0.5rem;
+    }
+}
+
+.shareToast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    z-index: 10002;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

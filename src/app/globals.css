@@ -71,7 +71,6 @@ body {
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
-  /* Back to overflow hidden to prevent global scroll */
 }
 
 .layout-container {
@@ -85,7 +84,6 @@ body {
 .main-content {
   flex: 1;
   overflow: hidden;
-  /* Allow segments to scroll, not the whole page */
   position: relative;
 }
 
