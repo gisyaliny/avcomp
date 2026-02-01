@@ -17,6 +17,7 @@ import { Airport } from '@/lib/airports';
 interface Props {
     aircraft: Aircraft[];
     selectedAircraftId?: string;
+    activeRangeIds?: string[];
     onAircraftSelect?: (id: string) => void;
     origin: Airport;
     onOriginChange: (airport: Airport) => void;

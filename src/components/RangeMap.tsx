@@ -13,7 +13,7 @@ import { Aircraft } from '@/types';
 import { Plane } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-function RangeCircle({ center, radius, content }: { center: [number, number], radius: number, content: React.ReactNode }) {
+function RangeCircle({ center, radius, color }: { center: [number, number], radius: number, color: string }) {
     const map = useMap();
     const circleRef = React.useRef<L.Circle>(null);
 
@@ -29,27 +29,23 @@ function RangeCircle({ center, radius, content }: { center: [number, number], ra
 
     return (
          <Circle 
-            ref={circleRef}
             center={center}
             radius={radius}
             pathOptions={{ 
-                color: '#0EA5E9', 
-                fillColor: '#0EA5E9', 
+                color: color, 
+                fillColor: color, 
                 fillOpacity: 0.1, 
                 weight: 2, 
                 dashArray: '5, 5' 
             }}
-        >
-           <Popup autoPan={false} closeButton={false}>
-               {content}
-           </Popup>
-        </Circle>
+        />
     )
 }
 
 interface RangeMapProps {
   aircraft: Aircraft[];
   selectedAircraftId?: string;
+  activeRangeIds?: string[];
   onAircraftSelect?: (id: string) => void;
   // Origin for the "flight planner" aspect
   origin: Airport;
@@ -128,11 +124,16 @@ const createPriceMarker = (price: number, isSelected: boolean) => {
 };
 
 // Component to handle map view updates
-function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
+function MapUpdater({ origin }: { origin: Airport }) {
   const map = useMap();
+  const [prevOrigin, setPrevOrigin] = useState(origin.code);
+
   useEffect(() => {
-    map.flyTo(center, zoom, { duration: 1.5 });
-  }, [center, zoom, map]);
+    if (origin.code !== prevOrigin) {
+        map.flyTo([origin.lat, origin.lng], 5, { duration: 1.5 });
+        setPrevOrigin(origin.code);
+    }
+  }, [origin, map, prevOrigin]);
   return null;
 }
 
@@ -154,7 +155,7 @@ function MapResizer() {
   return null;
 }
 
-export default function RangeMap({ aircraft, selectedAircraftId, onAircraftSelect, origin, onOriginChange, mapStyle }: RangeMapProps) {
+export default function RangeMap({ aircraft, selectedAircraftId, activeRangeIds, onAircraftSelect, origin, onOriginChange, mapStyle }: RangeMapProps) {
   // We can calculate distance if needed, but the main goal is visualizing "Range"
   // from the chosen origin.
   
@@ -171,7 +172,7 @@ export default function RangeMap({ aircraft, selectedAircraftId, onAircraftSelec
         zoomControl={false}
       >
         <MapResizer />
-        <MapUpdater center={[origin.lat, origin.lng]} zoom={5} />
+        <MapUpdater origin={origin} />
 
         {/* Conditional Layer Rendering */}
         {mapStyle === 'dark' && (
@@ -266,25 +267,23 @@ export default function RangeMap({ aircraft, selectedAircraftId, onAircraftSelec
              );
         })}
 
-        {/* Range Circle for Selected Aircraft */}
-        {selectedAircraft && (selectedAircraft.specs?.performance.typicalRange || selectedAircraft.rangeNm) && (
-             <RangeCircle 
-                center={[origin.lat, origin.lng]}
-                radius={(selectedAircraft.specs?.performance.typicalRange || selectedAircraft.rangeNm) * 1852}
-                content={
-                   <div style={{ textAlign: 'center' }}>
-                       <div style={{ fontWeight: 700, color: 'var(--primary)', marginBottom: '4px' }}>Flying Range</div>
-                       <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>{selectedAircraft.model}</div>
-                       <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                            Max Range: {(selectedAircraft.specs?.performance.typicalRange || selectedAircraft.rangeNm).toLocaleString()} NM
-                       </div>
-                       <div style={{ fontSize: '0.8rem', marginTop: '4px', fontStyle: 'italic' }}>
-                            From: {origin.name} ({origin.code})
-                       </div>
-                   </div>
-                }
-            />
-        )}
+        {/* Range Circles for Active Aircraft */}
+        {activeRangeIds?.map((id, index) => {
+            const ac = aircraft.find(a => a.id === id);
+            if (!ac) return null;
+            const colors = ['#0EA5E9', '#F43F5E', '#10B981', '#F59E0B', '#8B5CF6'];
+            const color = colors[index % colors.length];
+            const range = ac.specs?.performance.typicalRange || ac.rangeNm;
+            
+            return (
+                <RangeCircle 
+                    key={id}
+                    center={[origin.lat, origin.lng]}
+                    radius={range * 1852}
+                    color={color}
+                />
+            );
+        })}
       </MapContainer>
 
     </div>

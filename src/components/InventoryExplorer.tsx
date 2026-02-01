@@ -49,7 +49,8 @@ export default function InventoryExplorer() {
   const sortDir = searchParams.get('sortDir') as 'asc' | 'desc';
   const initialSort = sortKey ? { key: sortKey, direction: sortDir || 'asc' } : null;
 
-  const initialSelected = searchParams.get('sel') || undefined;
+  const initialRanges = searchParams.get('ranges')?.split(',').filter(Boolean) || [];
+  const initialSelected = searchParams.get('sel') || (initialRanges.length > 0 ? initialRanges[0] : undefined);
 
   const initialMinPax = Number(searchParams.get('minPax')) || 0;
 
@@ -68,6 +69,7 @@ export default function InventoryExplorer() {
   const [showComparison, setShowComparison] = useState(false); // UI state only
   const [sortConfig, setSortConfig] = useState<{ key: keyof Aircraft; direction: 'asc' | 'desc' } | null>(initialSort);
   const [selectedAircraftId, setSelectedAircraftId] = useState<string | undefined>(initialSelected);
+  const [activeRangeIds, setActiveRangeIds] = useState<string[]>(initialRanges);
   const [mapStyle, setMapStyle] = useState<'light' | 'dark' | 'satellite'>('light');
 
   // Sync URL with State
@@ -92,6 +94,7 @@ export default function InventoryExplorer() {
           params.set('sortDir', sortConfig.direction);
       }
       if (selectedAircraftId) params.set('sel', selectedAircraftId);
+      if (activeRangeIds.length > 0) params.set('ranges', activeRangeIds.join(','));
 
       const newUrl = `${pathname}?${params.toString()}`;
       
@@ -101,10 +104,19 @@ export default function InventoryExplorer() {
       }, 500);
 
       return () => clearTimeout(timeoutId);
-  }, [viewMode, origin, searchTerm, selectedMake, minRange, minPax, priceRange, selectedTypes, yearRange, compareList, sortConfig, selectedAircraftId, pathname, router]);
+  }, [viewMode, origin, searchTerm, selectedMake, minRange, minPax, priceRange, selectedTypes, yearRange, compareList, sortConfig, selectedAircraftId, activeRangeIds, pathname, router]);
 
   const toggleSelection = (id: string) => {
-      setSelectedAircraftId(prev => prev === id ? undefined : id);
+      setSelectedAircraftId(id);
+      setActiveRangeIds(prev => {
+          if (prev.includes(id)) return prev.filter(i => i !== id);
+          return [...prev, id];
+      });
+  };
+
+  const removeRange = (id: string) => {
+      setActiveRangeIds(prev => prev.filter(i => i !== id));
+      if (selectedAircraftId === id) setSelectedAircraftId(undefined);
   };
   
   const resetAll = () => {
@@ -119,6 +131,7 @@ export default function InventoryExplorer() {
       setCompareList([]);
       setSortConfig(initialSort);
       setSelectedAircraftId(undefined);
+      setActiveRangeIds([]);
       // Optional: keep viewMode or reset it? User probably wants to keep view mode.
   };
 
@@ -450,11 +463,82 @@ export default function InventoryExplorer() {
         <DynamicRangeMap 
             aircraft={MOCK_AIRCRAFT} 
             selectedAircraftId={selectedAircraftId}
+            activeRangeIds={activeRangeIds}
             onAircraftSelect={toggleSelection}
             origin={origin}
             onOriginChange={setOrigin}
             mapStyle={mapStyle}
         />
+
+        {/* Stacked Range Info Boxes - Center Bottom */}
+        {activeRangeIds.length > 0 && (
+            <div style={{
+                position: 'absolute',
+                bottom: '2rem',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1001,
+                display: 'flex',
+                flexDirection: 'column-reverse',
+                gap: '8px',
+                pointerEvents: 'none',
+                width: '100%',
+                maxWidth: '400px',
+                alignItems: 'center'
+            }}>
+                {activeRangeIds.map((id, index) => {
+                    const ac = MOCK_AIRCRAFT.find(a => a.id === id);
+                    if (!ac) return null;
+                    const colors = ['#0EA5E9', '#F43F5E', '#10B981', '#F59E0B', '#8B5CF6'];
+                    const color = colors[index % colors.length];
+                    
+                    return (
+                        <div key={id} style={{
+                            pointerEvents: 'auto',
+                            background: 'var(--bg-secondary)',
+                            borderStyle: 'solid',
+                            borderWidth: '1px 1px 1px 4px',
+                            borderColor: color,
+                            padding: '0.75rem 1rem',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '1rem',
+                            width: '100%',
+                            animation: 'slideUp 0.3s ease-out'
+                        }}>
+                            <div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fly Range Showing</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{ac.make} {ac.model}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Max: {ac.rangeNm.toLocaleString()} NM from {origin.code}</div>
+                            </div>
+                            <button 
+                                onClick={() => removeRange(id)}
+                                style={{
+                                    background: 'var(--bg-tertiary)',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '24px',
+                                    height: '24px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-secondary)',
+                                    transition: 'background 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--danger-bg)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-tertiary)'}
+                            >
+                                <X size={14} />
+                            </button>
+                        </div>
+                    );
+                })}
+            </div>
+        )}
       </section>
 
       {/* List Panel (Right) - Adjust width based on view mode? Or simple content swap */}
@@ -519,7 +603,7 @@ export default function InventoryExplorer() {
                         <div onClick={() => toggleSelection(aircraft.id)}>
                             <AircraftCard 
                                 data={aircraft} 
-                                active={aircraft.id === selectedAircraftId}
+                                active={activeRangeIds.includes(aircraft.id)}
                             />
                         </div>
                         {/* Actions */}
@@ -604,7 +688,7 @@ export default function InventoryExplorer() {
                                 <AircraftTableRow 
                                     key={aircraft.id}
                                     aircraft={aircraft}
-                                    selected={aircraft.id === selectedAircraftId}
+                                    selected={activeRangeIds.includes(aircraft.id)}
                                     onSelect={toggleSelection}
                                     isCompared={compareList.includes(aircraft.id)}
                                     onCompare={toggleCompare}

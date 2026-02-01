@@ -37,7 +37,7 @@ export default function Header() {
             padding: '0 1.5rem',
             position: 'sticky',
             top: 0,
-            zIndex: 50
+            zIndex: 10001
         }}>
             {/* Logo */}
             <Link href="/" style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>

@@ -1,12 +1,9 @@
-/* Main App Container */
 .container {
   display: flex;
-  height: calc(100vh - 64px);
-  /* Fallback or exact match to var(--header-height) */
-  height: calc(100vh - var(--header-height));
-  width: 100vw;
-  overflow: hidden;
+  height: 100%;
+  width: 100%;
   background: var(--bg-primary);
+  overflow: hidden;
 }
 
 .mapPanel {

@@ -55,8 +55,8 @@ export default function BasemapGallery({ currentStyle, onChange }: BasemapGaller
                 }}
                 title="Change Basemap"
             >
-                <div style={{ width: '100%', height: '100%', borderRadius: '4px', overflow: 'hidden', position: 'relative' }}>
-                    <Image src={activeBasemap.image} alt="Basemap" fill style={{ objectFit: 'cover' }} />
+                <div style={{ width: '100%', height: '100%', borderRadius: '4px', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="fa-solid fa-layer-group" style={{ fontSize: '1.25rem', color: isOpen ? 'var(--primary)' : 'var(--text-secondary)' }}></i>
                 </div>
                 {/* Active Indicator Ring */}
                 <div style={{

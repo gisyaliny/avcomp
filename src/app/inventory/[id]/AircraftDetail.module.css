@@ -1,10 +1,10 @@
 .container {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0 1.5rem 4rem;
-    height: calc(100vh - 64px);
+    padding: 0 1.5rem 2rem;
+    /* Reduced padding slightly */
+    height: 100%;
     overflow-y: auto;
-    overflow-x: hidden;
 }
 
 /* Sticky Header on scroll - optional interaction, 
