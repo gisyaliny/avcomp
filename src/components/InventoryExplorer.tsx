@@ -8,7 +8,7 @@ import DynamicRangeMap from "@/components/DynamicRangeMap";
 import AircraftCard from "@/components/AircraftCard";
 import styles from '@/app/page.module.css';
 import { MAJOR_AIRPORTS, Airport } from '@/lib/airports';
-import { Search, ChevronDown, SlidersHorizontal, RefreshCcw, MapPin, X, LayoutTemplate, Table as TableIcon, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, ChevronDown, SlidersHorizontal, RefreshCcw, MapPin, X, LayoutTemplate, Table as TableIcon, ArrowUp, ArrowDown, Save, Menu } from 'lucide-react';
 import { Aircraft } from '@/types';
 import AircraftTableRow from "@/components/AircraftTableRow";
 import tableStyles from "@/components/AircraftTable.module.css";
@@ -18,7 +18,7 @@ import YearFilter from "@/components/YearFilter";
 import ComparisonModal from "@/components/ComparisonModal";
 import BasemapGallery from "@/components/BasemapGallery";
 import { useAuth } from "@/components/AuthContext";
-import { Save } from 'lucide-react';
+import { useUI } from './UIContext';
 
 export default function InventoryExplorer() {
   const { user, saveSearch } = useAuth();
@@ -55,10 +55,9 @@ export default function InventoryExplorer() {
   const initialMinPax = Number(searchParams.get('minPax')) || 0;
 
   // State
+  const { viewMode, setViewMode, showFilters, setShowFilters } = useUI();
   const [origin, setOrigin] = useState<Airport>(initialOrigin);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'split' | 'table'>(initialView);
   const [selectedMake, setSelectedMake] = useState<string>(initialMake);
   const [minRange, setMinRange] = useState<number>(initialMinRange);
   const [minPax, setMinPax] = useState<number>(initialMinPax);
@@ -71,14 +70,13 @@ export default function InventoryExplorer() {
   const [selectedAircraftId, setSelectedAircraftId] = useState<string | undefined>(initialSelected);
   const [activeRangeIds, setActiveRangeIds] = useState<string[]>(initialRanges);
   const [mapStyle, setMapStyle] = useState<'light' | 'dark' | 'satellite'>('light');
+  const [mobileMapOpen, setMobileMapOpen] = useState(false);
 
   // Sync URL with State
   useEffect(() => {
       const params = new URLSearchParams();
       if (viewMode !== 'split') params.set('view', viewMode);
       if (origin.code !== MAJOR_AIRPORTS[0].code) params.set('origin', origin.code);
-      if (searchTerm) params.set('q', searchTerm);
-      if (selectedMake !== 'All Makes') params.set('make', selectedMake);
       if (searchTerm) params.set('q', searchTerm);
       if (selectedMake !== 'All Makes') params.set('make', selectedMake);
       if (minRange > 0) params.set('minRange', minRange.toString());
@@ -210,24 +208,12 @@ export default function InventoryExplorer() {
   };
 
   return (
-    <main className={styles.container}>
+    <main className={`${styles.container} ${mobileMapOpen ? styles.mapActive : ''}`}>
       {/* Map Panel (Left) */}
       <section className={styles.mapPanel}>
         {/* Floating Filters Bar on Map */}
-        <div style={{ 
-            position: 'absolute', 
-            top: '1.5rem', 
-            left: '1.5rem', 
-            right: '1.5rem', 
-            zIndex: 1000, 
-            display: 'flex', 
-            justifyContent: 'space-between',
-            gap: '0.75rem', 
-            alignItems: 'center', 
-            pointerEvents: 'none' 
-        }}>
-            
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className={styles.mapControls}>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
                 {/* Departure Filter - Pointer Events Auto */}
                 <div style={{ pointerEvents: 'auto', background: 'var(--bg-secondary)', padding: '0 1rem', borderRadius: '999px', border: '1px solid var(--bg-tertiary)', boxShadow: 'var(--shadow-md)', display: 'flex', alignItems: 'center', gap: '8px', height: '48px', transition: 'all 0.2s' }}>
                     <div style={{ fontWeight: 700, fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>DEPARTURE</div>
@@ -247,41 +233,13 @@ export default function InventoryExplorer() {
                     </select>
                 </div>
                 
-                {/* Basemap Gallery */}
-                <BasemapGallery currentStyle={mapStyle} onChange={setMapStyle} />
-
-                {/* Layout Switch */}
-                <div style={{ pointerEvents: 'auto', background: 'var(--bg-secondary)', padding: '4px', borderRadius: '999px', border: '1px solid var(--bg-tertiary)', boxShadow: 'var(--shadow-md)', display: 'flex', alignItems: 'center', height: '48px' }}>
-                    <button 
-                        onClick={() => setViewMode('split')}
-                        style={{ 
-                            padding: '0 1rem', 
-                            height: '38px',
-                            background: viewMode === 'split' ? 'var(--primary)' : 'transparent',
-                            color: viewMode === 'split' ? 'white' : 'var(--text-muted)',
-                            borderRadius: '999px', border: 'none', cursor: 'pointer', display: 'flex', gap: '6px', alignItems: 'center', fontSize: '0.8rem', fontWeight: 600,
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <LayoutTemplate size={16} /> Split
-                    </button>
-                    <button 
-                        onClick={() => setViewMode('table')}
-                        style={{ 
-                            padding: '0 1rem', 
-                            height: '38px',
-                            background: viewMode === 'table' ? 'var(--primary)' : 'transparent',
-                            color: viewMode === 'table' ? 'white' : 'var(--text-muted)',
-                            borderRadius: '999px', border: 'none', cursor: 'pointer', display: 'flex', gap: '6px', alignItems: 'center', fontSize: '0.8rem', fontWeight: 600,
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <TableIcon size={16} /> Table
-                    </button>
+                {/* Basemap Gallery - Tablet/Mobile Hide for compactness */}
+                <div className={styles.tabletHide}>
+                    <BasemapGallery currentStyle={mapStyle} onChange={setMapStyle} />
                 </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <div className={styles.hideOnMobile} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 {/* Make Filter */}
                 <div style={{ pointerEvents: 'auto', position: 'relative' }}>
                     <select 
@@ -297,14 +255,6 @@ export default function InventoryExplorer() {
                     <ChevronDown size={14} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }} />
                 </div>
 
-                <button 
-                    className={styles.filterPill} 
-                    style={{ pointerEvents: 'auto', height: '48px', background: showFilters ? 'var(--primary)' : 'var(--bg-primary)', color: showFilters ? 'white' : 'var(--text-primary)' }}
-                    onClick={() => setShowFilters(!showFilters)}
-                >
-                    <SlidersHorizontal size={16} /> Filters
-                </button>
-                
                 <button 
                     onClick={resetAll}
                     style={{ 
@@ -338,7 +288,6 @@ export default function InventoryExplorer() {
                                 q: searchTerm,
                                 minRange: minRange.toString(),
                                 minPax: minPax.toString(),
-                                // Add other params as needed
                             });
                             alert("Search saved!");
                         }
@@ -364,13 +313,16 @@ export default function InventoryExplorer() {
         
         {/* Expanded Filters Overlay */}
         {showFilters && (
-            <div style={{ 
-                position: 'absolute', top: '4.5rem', left: '1rem', width: '500px', zIndex: 1000, 
-                background: 'var(--bg-secondary)', padding: '1.5rem', borderRadius: '12px', 
-                border: '1px solid var(--bg-tertiary)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-                display: 'flex', flexDirection: 'column', gap: '1.5rem',
-                maxHeight: '80vh', overflowY: 'auto'
-            }}>
+            <div 
+                className="filters-overlay"
+                style={{ 
+                    position: 'absolute', top: '1rem', left: '1rem', width: 'calc(100% - 2rem)', maxWidth: '500px', zIndex: 2000, 
+                    background: 'var(--bg-secondary)', padding: '1.5rem', borderRadius: '12px', 
+                    border: '1px solid var(--bg-tertiary)', boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                    display: 'flex', flexDirection: 'column', gap: '1.5rem',
+                    maxHeight: 'calc(100% - 2rem)', overflowY: 'auto'
+                }}
+            >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                      <h3 style={{ fontSize: '1rem', fontWeight: 600 }}>Filters</h3>
                      <button onClick={() => setShowFilters(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -474,15 +426,15 @@ export default function InventoryExplorer() {
         {activeRangeIds.length > 0 && (
             <div style={{
                 position: 'absolute',
-                bottom: '2rem',
+                bottom: mobileMapOpen ? '6rem' : '2rem',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 1001,
-                display: 'flex',
+                display: mobileMapOpen || !initialView ? 'flex' : 'none', // Hide on desktop list unless map is visible
                 flexDirection: 'column-reverse',
                 gap: '8px',
                 pointerEvents: 'none',
-                width: '100%',
+                width: 'calc(100% - 2rem)',
                 maxWidth: '400px',
                 alignItems: 'center'
             }}>
@@ -499,20 +451,20 @@ export default function InventoryExplorer() {
                             borderStyle: 'solid',
                             borderWidth: '1px 1px 1px 4px',
                             borderColor: color,
-                            padding: '0.75rem 1rem',
+                            padding: mobileMapOpen ? '0.5rem 0.75rem' : '0.75rem 1rem',
                             borderRadius: '8px',
                             boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            gap: '1rem',
+                            gap: '0.75rem',
                             width: '100%',
                             animation: 'slideUp 0.3s ease-out'
                         }}>
-                            <div>
-                                <div style={{ fontSize: '0.7rem', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fly Range Showing</div>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{ac.make} {ac.model}</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Max: {ac.rangeNm.toLocaleString()} NM from {origin.code}</div>
+                            <div style={{ overflow: 'hidden' }}>
+                                <div style={{ fontSize: '0.65rem', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fly Range</div>
+                                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ac.model}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Max: {ac.rangeNm.toLocaleString()} NM</div>
                             </div>
                             <button 
                                 onClick={() => removeRange(id)}
@@ -564,34 +516,64 @@ export default function InventoryExplorer() {
                   onClick={(e) => { e.stopPropagation(); setCompareList([]); }}
                   style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.7)', marginLeft: '0.5rem', cursor: 'pointer' }}
               >
-                  Clear
+                Clear
               </button>
           </div>
       )}
 
       <aside className={styles.listPanel} style={{ width: viewMode === 'table' ? '900px' : '450px', transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-        <header className={styles.listHeader}>
-             <div className={styles.searchRow}>
-                 <div className={styles.searchInputWrapper}>
-                    <Search size={16} className={styles.searchIcon} />
-                     <input 
-                        type="text" 
-                        placeholder="Search model, make..." 
-                        className={styles.searchInput}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                 </div>
-                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                     {/* Placeholder for potential future tools */}
-                 </div>
-             </div>
-             
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', fontWeight: 600, paddingBottom: '0.5rem' }}>
-                <span>{filteredAircraft.length} Aircraft</span>
-                <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>Sort: Recommended</span>
-             </div>
-        </header>
+        {/* Search & Header (Only show if not table view or if split) */}
+        {viewMode === 'split' && (
+            <div className={styles.listHeader}>
+                <div className={styles.searchRow}>
+                   <div className={styles.searchInputWrapper}>
+                        <Search className={styles.searchIcon} size={18} />
+                        <input 
+                            type="text" 
+                            className={styles.searchInput}
+                            placeholder="Search by model, maker..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                   </div>
+                </div>
+
+                <div className={styles.filtersRow}>
+                    <div className={styles.showOnMobile} style={{ width: '100%', gap: '0.5rem' }}>
+                        <select 
+                            className={styles.filterPill} 
+                            style={{ flex: 1, height: '40px' }}
+                            value={selectedMake}
+                            onChange={(e) => setSelectedMake(e.target.value)}
+                        >
+                            {availableMakes.map(make => (
+                                <option key={make} value={make}>{make}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className={styles.hideOnMobile} style={{ gap: '0.5rem' }}>
+                        {availableMakes.slice(0, 4).map(make => (
+                            <button 
+                                key={make}
+                                className={`${styles.filterPill} ${selectedMake === make ? styles.active : ''}`}
+                                onClick={() => setSelectedMake(make === selectedMake ? 'All Makes' : make)}
+                            >
+                                {make}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                        {filteredAircraft.length} Aircraft
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                        Sort: <b>Recommended</b>
+                    </div>
+                </div>
+            </div>
+        )}
 
         {/* Table Header Moved Inside Scroll */}
 
@@ -709,6 +691,24 @@ export default function InventoryExplorer() {
             )}
         </div>
       </aside>
+
+      {/* Mobile Toggle Button */}
+      <button 
+        className={styles.mobileToggle}
+        onClick={() => setMobileMapOpen(!mobileMapOpen)}
+      >
+        {mobileMapOpen ? (
+            <>
+                <LayoutTemplate size={20} />
+                Show List
+            </>
+        ) : (
+            <>
+                <MapPin size={20} />
+                Show Map
+            </>
+        )}
+      </button>
     </main>
   );
 }

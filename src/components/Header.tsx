@@ -3,19 +3,22 @@
 import Link from 'next/link';
 import { useAuth } from './AuthContext';
 import ThemeToggle from './ThemeToggle';
-import { User, LogOut, Heart, Bookmark, Settings, ChevronDown, UserCircle } from 'lucide-react';
+import { User, LogOut, Heart, Bookmark, Settings, ChevronDown, UserCircle, LayoutTemplate, Table as TableIcon, SlidersHorizontal, Menu } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LoginModal from './LoginModal';
+import { useUI } from './UIContext';
 
 export default function Header() {
-    const { user, login, logout } = useAuth();
+    const { user, logout } = useAuth();
+    const { viewMode, setViewMode, showFilters, setShowFilters } = useUI();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
-    // Close menu on click outside
+    // Close menus on click outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -40,17 +43,67 @@ export default function Header() {
             zIndex: 10001
         }}>
             {/* Logo */}
-            <Link href="/" style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
-                <div style={{ width: '24px', height: '24px', background: 'var(--primary)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 2L2 8.6L11.4 12.6L15.4 22L22 2Z" />
-                    </svg>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                <Link href="/" className="logo-text" style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+                    <div style={{ width: '24px', height: '24px', background: 'var(--primary)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 2L2 8.6L11.4 12.6L15.4 22L22 2Z" />
+                        </svg>
+                    </div>
+                    AvComp
+                </Link>
+
+                <div className="nav-controls-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-primary)', padding: '4px', borderRadius: '12px', border: '1px solid var(--bg-tertiary)' }}>
+                    <button 
+                        onClick={() => setViewMode('split')}
+                        style={{ 
+                            padding: '0.5rem 1rem', 
+                            background: viewMode === 'split' ? 'var(--primary)' : 'transparent',
+                            color: viewMode === 'split' ? 'white' : 'var(--text-secondary)',
+                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <LayoutTemplate size={16} /> <span className="hide-on-tablet">Split View</span>
+                    </button>
+                    <button 
+                        onClick={() => setViewMode('table')}
+                        style={{ 
+                            padding: '0.5rem 1rem', 
+                            background: viewMode === 'table' ? 'var(--primary)' : 'transparent',
+                            color: viewMode === 'table' ? 'white' : 'var(--text-secondary)',
+                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <TableIcon size={16} /> <span className="hide-on-tablet">Table View</span>
+                    </button>
+                    <div style={{ width: '1px', height: '20px', background: 'var(--bg-tertiary)', margin: '0 4px' }} />
+                    <button 
+                        onClick={() => setShowFilters(!showFilters)}
+                        style={{ 
+                            padding: '0.5rem 1rem', 
+                            background: showFilters ? 'var(--primary)' : 'transparent',
+                            color: showFilters ? 'white' : 'var(--text-secondary)',
+                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <SlidersHorizontal size={16} /> <span className="hide-on-tablet">Filters</span>
+                    </button>
                 </div>
-                AvComp
-            </Link>
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <ThemeToggle />
+
+                <button 
+                    className="mobile-nav-toggle"
+                    onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px' }}
+                >
+                    <Menu size={24} />
+                </button>
 
                 {/* User Section */}
                 {user ? (
@@ -82,7 +135,7 @@ export default function Header() {
                             }}>
                                 {user.name[0].toUpperCase()}
                             </div>
-                            <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)', display: 'none', '@media (min-width: 640px)': { display: 'block' } } as any}>{user.name}</span>
+                            <span className="user-label" style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{user.name}</span>
                             <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} />
                         </button>
 
@@ -176,10 +229,58 @@ export default function Header() {
             
             {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
 
+            {/* Mobile Nav Overlay */}
+            {isMobileNavOpen && (
+                <div style={{ position: 'fixed', top: 'var(--header-height)', left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 10002 }} onClick={() => setIsMobileNavOpen(false)}>
+                    <div style={{ background: 'var(--bg-secondary)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid var(--bg-tertiary)' }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>View Mode</div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button onClick={() => { setViewMode('split'); setIsMobileNavOpen(false); }} style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: viewMode === 'split' ? 'var(--primary)' : 'var(--bg-primary)', color: viewMode === 'split' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <LayoutTemplate size={18} /> Split
+                            </button>
+                            <button onClick={() => { setViewMode('table'); setIsMobileNavOpen(false); }} style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: viewMode === 'table' ? 'var(--primary)' : 'var(--bg-primary)', color: viewMode === 'table' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <TableIcon size={18} /> Table
+                            </button>
+                        </div>
+                        <div style={{ height: '1px', background: 'var(--bg-tertiary)', margin: '0.5rem 0' }} />
+                        <button onClick={() => { setShowFilters(!showFilters); setIsMobileNavOpen(false); }} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: showFilters ? 'var(--primary)' : 'var(--bg-primary)', color: showFilters ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <SlidersHorizontal size={18} /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <style jsx>{`
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(-5px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+
+                @media (min-width: 769px) {
+                    .mobile-nav-toggle {
+                        display: none !important;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .nav-controls-desktop {
+                        display: none !important;
+                    }
+                    .user-label {
+                        display: none !important;
+                    }
+                    header {
+                        padding: 0 1rem !important;
+                    }
+                    .logo-text {
+                        font-size: 1.1rem !important;
+                    }
+                }
+
+                @media (max-width: 1024px) {
+                    .hide-on-tablet {
+                        display: none !important;
+                    }
                 }
             `}</style>
         </header>
