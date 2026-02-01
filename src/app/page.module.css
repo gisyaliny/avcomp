@@ -1,0 +1,141 @@
+/* Main App Container */
+.container {
+  display: flex;
+  height: calc(100vh - 64px);
+  /* Fallback or exact match to var(--header-height) */
+  height: calc(100vh - var(--header-height));
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+.mapPanel {
+  flex: 1;
+  position: relative;
+  /* Ensure map context is clean */
+  background: #E5E7EB;
+}
+
+.listPanel {
+  width: 450px;
+  /* Slightly wider for better card display */
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  /* Soft separation instead of heavy border */
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.04);
+  z-index: 20;
+  border-left: 1px solid transparent;
+  /* Remove visible border, rely on shadow */
+}
+
+.listScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  /* Generous spacing */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  /* Spacing between cards */
+}
+
+/* Scrollbar styling for a cleaner look */
+.listScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.listScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.listScroll::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+}
+
+.listHeader {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--bg-tertiary);
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.searchRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.searchInputWrapper {
+  position: relative;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 9999px;
+  /* Pill shape for search */
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+}
+
+.filtersRow {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+/* Modern Pill Buttons */
+.filterPill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 9999px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.filterPill:hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.filterPill.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}

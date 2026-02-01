@@ -1,0 +1,445 @@
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Sticky Header on scroll - optional interaction, 
+   for now just a top bar that might be sticky */
+.stickyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.stickyPrice {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .stickyPrice {
+        display: block;
+    }
+}
+
+.backBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.backBtn:hover {
+    color: var(--primary);
+}
+
+/* Hero Grid Layout */
+.heroGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    height: auto;
+}
+
+@media (min-width: 768px) {
+    .heroGrid {
+        grid-template-columns: 2fr 1fr;
+        height: 500px;
+    }
+}
+
+.heroMain {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    height: 300px;
+    background: var(--bg-tertiary);
+}
+
+@media (min-width: 768px) {
+    .heroMain {
+        height: 100%;
+    }
+}
+
+.heroSide {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+    display: none;
+    /* Hide on mobile by default */
+}
+
+@media (min-width: 768px) {
+    .heroSide {
+        display: grid;
+    }
+}
+
+.sideImg {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg-tertiary);
+}
+
+.heroContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+}
+
+.heroBadge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Main Content Layout */
+.contentLayout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    position: relative;
+}
+
+@media (min-width: 1024px) {
+    .contentLayout {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.mainContent {
+    min-width: 0;
+}
+
+.headerBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-family: var(--font-outfit);
+}
+
+.subtext {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.dot {
+    color: var(--bg-tertiary);
+}
+
+.actionRow {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.iconBtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--bg-tertiary);
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.iconBtn:hover {
+    border-color: var(--text-secondary);
+    transform: translateY(-2px);
+}
+
+.section {
+    margin-bottom: 3rem;
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    color: var(--text-primary);
+    font-family: var(--font-outfit);
+    border-bottom: 1px solid var(--bg-tertiary);
+    padding-bottom: 0.75rem;
+}
+
+.description {
+    line-height: 1.7;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+.highlightsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.highlightItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.checkIcon {
+    color: var(--success);
+    flex-shrink: 0;
+}
+
+/* Spec Tabs/Grids */
+.specCategory {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+    color: var(--text-primary);
+}
+
+.specGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--bg-tertiary);
+}
+
+.specItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.specLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.specValue {
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Sidebar */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.priceCard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: calc(var(--header-height) + 2rem);
+}
+
+.priceLabel {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.bigPrice {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.primaryBtn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.primaryBtn:hover {
+    background: var(--primary-hover);
+}
+
+.outlineBtn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.outlineBtn:hover {
+    border-color: var(--text-secondary);
+    background: var(--bg-primary);
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.infoCard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+}
+
+.sidebarTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.sellerInfo {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.sellerAvatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.sellerName {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.sellerRole {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.sellerMeta {
+    border-top: 1px solid var(--bg-tertiary);
+    padding-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Similar Aircraft */
+.similarSection {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--bg-tertiary);
+}
+
+.similarGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.similarCard {
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.similarCard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.similarImg {
+    height: 180px;
+    position: relative;
+    background: var(--bg-tertiary);
+}
+
+.similarContent {
+    padding: 1rem;
+}
+
+.similarTitle {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.similarPrice {
+    color: var(--primary);
+    font-weight: 600;
+}
