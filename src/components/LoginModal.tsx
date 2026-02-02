@@ -9,14 +9,27 @@ interface Props {
 }
 
 export default function LoginModal({ onClose }: Props) {
-    const { login } = useAuth();
+    const { loginWithGoogle, loginWithEmail, signupWithEmail } = useAuth();
+    const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email) {
-            login(email);
+        setLoading(true);
+        try {
+            if (isLogin) {
+                await loginWithEmail(email, password);
+            } else {
+                await signupWithEmail(email, password, name);
+            }
             onClose();
+        } catch (err: any) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -24,16 +37,17 @@ export default function LoginModal({ onClose }: Props) {
         <div style={overlayStyle} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
             <div style={modalStyle}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Welcome Back</h2>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
                     <button onClick={onClose} style={closeBtnStyle}><X size={24} /></button>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-                    <button style={socialBtnStyle}>
+                    <button style={socialBtnStyle} onClick={() => { loginWithGoogle().then(onClose).catch(alert); }}>
                          <div style={{ width: '24px', height: '24px', background: 'black', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.8rem' }}>G</div>
                         Continue with Google
                     </button>
-                    <button style={socialBtnStyle}>
+                    {/* Github disabled for now */}
+                    <button style={socialBtnStyle} disabled>
                         <Github size={20} />
                         Continue with GitHub
                     </button>
@@ -46,7 +60,21 @@ export default function LoginModal({ onClose }: Props) {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: '1.5rem' }}>
+                    {!isLogin && (
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label style={labelStyle}>Full Name</label>
+                            <input 
+                                type="text" 
+                                required 
+                                placeholder="John Doe" 
+                                style={inputStyle}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                    )}
+
+                    <div style={{ marginBottom: '1rem' }}>
                         <label style={labelStyle}>Email Address</label>
                         <input 
                             type="email" 
@@ -58,13 +86,32 @@ export default function LoginModal({ onClose }: Props) {
                         />
                     </div>
 
-                    <button type="submit" style={primaryBtnStyle}>
-                        <LogIn size={18} /> Log In with Email
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <label style={labelStyle}>Password</label>
+                        <input 
+                            type="password" 
+                            required 
+                            placeholder="••••••••" 
+                            style={inputStyle}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            minLength={6}
+                        />
+                    </div>
+
+                    <button type="submit" style={primaryBtnStyle} disabled={loading}>
+                        <LogIn size={18} /> {loading ? 'Processing...' : (isLogin ? 'Log In with Email' : 'Sign Up with Email')}
                     </button>
                 </form>
 
                 <p style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
-                    Don't have an account? <span style={{ color: 'var(--primary)', fontWeight: 600, cursor: 'pointer' }}>Sign up</span>
+                    {isLogin ? "Don't have an account? " : "Already have an account? "}
+                    <span 
+                        style={{ color: 'var(--primary)', fontWeight: 600, cursor: 'pointer' }}
+                        onClick={() => setIsLogin(!isLogin)}
+                    >
+                        {isLogin ? 'Sign up' : 'Log in'}
+                    </span>
                 </p>
             </div>
         </div>

@@ -25,8 +25,8 @@ const formatCurrency = (val: number) => {
 };
 
 function AircraftCard({ data, active, onClick, route }: Props) {
-  const { user, toggleFavorite } = useAuth();
-  const isFavorite = user?.favorites.includes(data.id);
+  const { user, toggleFavorite, checkIsFavorite } = useAuth();
+  const isFavorite = checkIsFavorite(data.id);
   
   const cruiseSpeed = data.specs?.performance?.maxCruiseSpeed || 450;
   const flyTimeHours = route ? route.distance / cruiseSpeed : 0;

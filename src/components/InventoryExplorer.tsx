@@ -237,6 +237,31 @@ export default function InventoryExplorer() {
       return sortConfig.direction === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />;
   };
 
+  const handleSaveSearch = async () => {
+      if (!user) {
+          alert("Please log in to save searches.");
+          return;
+      }
+      const naming = prompt("Name your search:");
+      if (naming) {
+          const params: Record<string, string> = {};
+          if (searchTerm) params.searchTerm = searchTerm;
+          if (selectedMake && selectedMake !== 'All Makes') params.make = selectedMake;
+          if (selectedTypes.length > 0) params.types = selectedTypes.join(',');
+          if (priceRange.min) params.minPrice = priceRange.min.toString();
+          if (priceRange.max) params.maxPrice = priceRange.max.toString();
+          if (yearRange.min) params.minYear = yearRange.min.toString();
+          if (yearRange.max) params.maxYear = yearRange.max.toString();
+          if (minRange > 0) params.minRange = minRange.toString();
+          if (minPax > 0) params.minPax = minPax.toString();
+          if (origin) params.origin = origin.code;
+          if (destination) params.dest = destination.code;
+          
+          await saveSearch(naming, params);
+          alert("Search saved!");
+      }
+  };
+
   return (
     <main className={`${styles.container} ${mobileMapOpen ? styles.mapActive : ''}`}>
       {/* Map Panel (Left) */}
@@ -387,13 +412,10 @@ export default function InventoryExplorer() {
                     
                     <div style={{ display: 'flex', gap: '0.75rem' }}>
                         <button 
-                            onClick={() => {
-                                saveSearch("Saved Search", { q: searchTerm, make: selectedMake });
-                                alert("Search saved successfully!");
-                            }}
+                            onClick={handleSaveSearch}
                             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: 'var(--bg-primary)', border: '1px solid var(--bg-tertiary)', borderRadius: '8px', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600 }}
                         >
-                            <Save size={16} /> Save
+                            <Save size={16} /> Save Filter
                         </button>
                         <button 
                             onClick={() => setShowFilters(false)}
@@ -600,6 +622,23 @@ export default function InventoryExplorer() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                    </div>
+                   <button 
+                        onClick={handleSaveSearch}
+                        className={styles.iconButton}
+                        title="Save Search"
+                        style={{ 
+                            background: 'var(--bg-secondary)', 
+                            border: '1px solid var(--bg-tertiary)',
+                            padding: '0.5rem',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            color: 'var(--text-secondary)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}
+                   >
+                        <Save size={18} />
+                   </button>
+                   <div style={{ width: '1px', height: '20px', background: 'var(--bg-tertiary)', margin: '0 8px' }} />
                 </div>
 
                 <div className={styles.filtersRow}>

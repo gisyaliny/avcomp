@@ -23,8 +23,8 @@ interface Props {
 }
 
 const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare, sortKey, isTable = false, route }: Props) => {
-    const { user, toggleFavorite } = useAuth();
-    const isFavorite = user?.favorites.includes(aircraft.id);
+    const { user, toggleFavorite, checkIsFavorite } = useAuth();
+    const isFavorite = checkIsFavorite(aircraft.id);
 
     const cruiseSpeed = aircraft.specs?.performance?.maxCruiseSpeed || 450;
     const flyTimeHours = route ? route.distance / cruiseSpeed : 0;

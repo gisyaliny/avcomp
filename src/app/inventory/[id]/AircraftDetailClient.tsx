@@ -30,7 +30,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [shareNotification, setShareNotification] = useState(false);
     const [showComparison, setShowComparison] = useState(false);
-    const { user, toggleFavorite, isAuthenticated } = useAuth();
+    const { user, toggleFavorite, checkIsFavorite } = useAuth();
     const { compareList, toggleCompare, setCompareList } = useUI();
     const router = useRouter();
 
@@ -63,7 +63,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
         notFound();
     }
     
-    const isFavorite = user?.favorites.includes(aircraft.id);
+    const isFavorite = checkIsFavorite(aircraft.id);
     const { specs } = aircraft;
 
     // Simulate Similar Listings (randomly pick 3 others excluding current)
@@ -88,7 +88,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
     };
 
     const handleFavoriteClick = () => {
-        if (!isAuthenticated) {
+        if (!user) {
             setShowLogin(true);
             return;
         }

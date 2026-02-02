@@ -147,9 +147,9 @@ export default function Header() {
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 fontWeight: 600, fontSize: '0.9rem'
                             }}>
-                                {user.name[0].toUpperCase()}
+                                {(user.name?.[0] || user.email?.[0] || 'U').toUpperCase()}
                             </div>
-                            <span className="user-label" style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{user.name}</span>
+                            <span className="user-label" style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{user.name || user.email?.split('@')[0] || 'User'}</span>
                             <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} />
                         </button>
 
@@ -171,29 +171,24 @@ export default function Header() {
                                 animation: 'fadeIn 0.1s ease-out'
                             }}>
                                 <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--bg-tertiary)', marginBottom: '4px' }}>
-                                    <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{user.name}</p>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{user.email}</p>
+                                    <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{user.name || 'User'}</p>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{user.email || ''}</p>
                                 </div>
 
                                 <MenuItem 
                                     icon={<UserCircle size={16} />} 
                                     label="My Profile" 
-                                    onClick={() => alert("Profile settings would go here.")} 
+                                    onClick={() => router.push('/profile')} 
                                 />
                                 <MenuItem 
                                     icon={<Heart size={16} />} 
-                                    label={`Favorites (${user.favorites.length})`} 
-                                    onClick={() => alert("Favorites page would act here.")} 
+                                    label={`Favorites (${user.favorites?.length || 0})`} 
+                                    onClick={() => router.push('/favorites')} 
                                 />
                                 <MenuItem 
                                     icon={<Bookmark size={16} />} 
-                                    label={`Saved Searches (${user.savedSearches.length})`} 
-                                    onClick={() => alert("Saved searches modal/page.")} 
-                                />
-                                <MenuItem 
-                                    icon={<Settings size={16} />} 
-                                    label="Settings" 
-                                    onClick={() => alert("Settings page.")}
+                                    label={`Saved Searches (${user.savedSearches?.length || 0})`} 
+                                    onClick={() => router.push('/saved')} 
                                 />
 
                                 <div style={{ height: '1px', background: 'var(--bg-tertiary)', margin: '4px 0' }} />
