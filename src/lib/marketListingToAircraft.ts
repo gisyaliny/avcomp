@@ -21,7 +21,7 @@ function num(v: unknown, fallback = 0): number {
 export function marketListingToAircraft(listing: MarketListing, index: number): Aircraft {
     const sn = listing.sn;
     const ask = listing.askTakeUsd ?? 0;
-    const img = IMG_POOL[Math.abs(sn + index) % IMG_POOL.length];
+    const img = listing.thumbUrl ?? IMG_POOL[Math.abs(sn + index) % IMG_POOL.length];
     const rangeNm = 1650 + (sn % 400);
     const cruise = 420 + (sn % 35);
     const pax = Math.min(12, Math.max(6, num(listing.pax, 9)));

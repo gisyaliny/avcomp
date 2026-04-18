@@ -1,9 +1,15 @@
 import type { Aircraft } from '@/types';
-import type { MarketDataPayload } from '@/types/marketListing';
-import payload from '@/data/marketDatabase.json';
+import { getAllListings } from '@/lib/marketListings';
 import { marketListingToAircraft } from '@/lib/marketListingToAircraft';
 
-const data = payload as MarketDataPayload;
+let cachedAircraft: Aircraft[] | null = null;
 
-/** @deprecated Use `getMarketAircraft()` or import from marketDatabase — kept for gradual migration. */
-export const MOCK_AIRCRAFT: Aircraft[] = data.listings.map((row, i) => marketListingToAircraft(row, i));
+export function getMarketAircraft(): Aircraft[] {
+    if (!cachedAircraft) {
+        cachedAircraft = getAllListings().map((row, i) => marketListingToAircraft(row, i));
+    }
+    return cachedAircraft;
+}
+
+/** Back-compat export for inventory pages/components. */
+export const MOCK_AIRCRAFT: Aircraft[] = getMarketAircraft();
