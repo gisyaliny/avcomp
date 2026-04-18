@@ -1,8 +1,11 @@
+'use client';
+
 import React from 'react';
 import { Aircraft } from '@/types';
 import { X, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useListingDetailModal } from '@/components/ListingDetailModalContext';
 
 interface Props {
     selectedAircraft: Aircraft[];
@@ -12,6 +15,7 @@ interface Props {
 
 export default function ComparisonModal({ selectedAircraft, onClose, onRemove }: Props) {
     const router = useRouter();
+    const { openListingDetail } = useListingDetailModal();
     
     if (selectedAircraft.length === 0) return null;
 
@@ -178,12 +182,15 @@ export default function ComparisonModal({ selectedAircraft, onClose, onRemove }:
                                 {/* View Details Button Row */}
                                 <div style={{ 
                                     padding: '1.5rem', 
-                                    height: '80px', 
+                                    minHeight: '80px', 
                                     display: 'flex', 
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
+                                    flexDirection: 'column',
+                                    alignItems: 'stretch',
+                                    justifyContent: 'center',
+                                    gap: '0.5rem',
                                 }}>
                                     <button
+                                        type="button"
                                         onClick={() => {
                                             router.push(`/inventory/${ac.id}`);
                                             onClose();
@@ -211,6 +218,23 @@ export default function ComparisonModal({ selectedAircraft, onClose, onRemove }:
                                         }}
                                     >
                                         View Details
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => openListingDetail(ac.id)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.55rem 1rem',
+                                            background: 'transparent',
+                                            color: 'var(--primary)',
+                                            border: '1px solid var(--bg-tertiary)',
+                                            borderRadius: '12px',
+                                            fontWeight: 700,
+                                            fontSize: '0.82rem',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        Market listing
                                     </button>
                                 </div>
                             </div>

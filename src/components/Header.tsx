@@ -1,17 +1,31 @@
 'use client';
 
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import { useAuth } from './AuthContext';
 import ThemeToggle from './ThemeToggle';
-import { User, LogOut, Heart, Bookmark, Settings, ChevronDown, UserCircle, LayoutTemplate, Table as TableIcon, SlidersHorizontal, Menu, MapPin } from 'lucide-react';
+import { User, LogOut, Heart, Bookmark, ChevronDown, UserCircle, Menu, MapPin, Database, Layers } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import LoginModal from './LoginModal';
-import { useUI } from './UIContext';
+
+const navPill: CSSProperties = {
+    padding: '0.5rem 1rem',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'center',
+    fontSize: '0.85rem',
+    fontWeight: 600,
+    transition: 'all 0.2s',
+    textDecoration: 'none',
+    color: 'inherit',
+};
 
 export default function Header() {
     const { user, logout } = useAuth();
-    const { viewMode, setViewMode, showFilters, setShowFilters } = useUI();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
@@ -54,58 +68,56 @@ export default function Header() {
                     <span style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent-dark) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>AvComp</span>
                 </Link>
 
-                <div className="nav-controls-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-primary)', padding: '4px', borderRadius: '12px', border: '1px solid var(--bg-tertiary)' }}>
-                    <button 
-                        onClick={() => setViewMode('split')}
-                        style={{ 
-                            padding: '0.5rem 1rem', 
-                            background: viewMode === 'split' ? 'var(--primary)' : 'transparent',
-                            color: viewMode === 'split' ? 'white' : 'var(--text-secondary)',
-                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
-                            transition: 'all 0.2s'
+                <nav
+                    className="nav-controls-desktop"
+                    aria-label="Workspace"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        background: 'var(--bg-primary)',
+                        padding: '4px',
+                        borderRadius: '12px',
+                        border: '1px solid var(--bg-tertiary)',
+                    }}
+                >
+                    <Link
+                        href="/"
+                        aria-current={pathname === '/' ? 'page' : undefined}
+                        style={{
+                            ...navPill,
+                            background: pathname === '/' ? 'var(--primary)' : 'transparent',
+                            color: pathname === '/' ? 'white' : 'var(--text-secondary)',
                         }}
                     >
-                        <LayoutTemplate size={16} /> <span className="hide-on-tablet">Split View</span>
-                    </button>
-                    <button 
-                        onClick={() => setViewMode('table')}
-                        style={{ 
-                            padding: '0.5rem 1rem', 
-                            background: viewMode === 'table' ? 'var(--primary)' : 'transparent',
-                            color: viewMode === 'table' ? 'white' : 'var(--text-secondary)',
-                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <TableIcon size={16} /> <span className="hide-on-tablet">Table View</span>
-                    </button>
-                    <div style={{ width: '1px', height: '20px', background: 'var(--bg-tertiary)', margin: '0 4px' }} />
-                    <button 
-                        onClick={() => setShowFilters(!showFilters)}
-                        style={{ 
-                            padding: '0.5rem 1rem', 
-                            background: showFilters ? 'var(--primary)' : 'transparent',
-                            color: showFilters ? 'white' : 'var(--text-secondary)',
-                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <SlidersHorizontal size={16} /> <span className="hide-on-tablet">Filters</span>
-                    </button>
-                    <div style={{ width: '1px', height: '20px', background: 'var(--bg-tertiary)', margin: '0 4px' }} />
-                    <button 
-                        onClick={() => router.push('/mission')}
-                        style={{ 
-                            padding: '0.5rem 1rem', 
+                        <Layers size={16} aria-hidden />
+                        <span className="hide-on-tablet">Inventory</span>
+                    </Link>
+                    <Link
+                        href="/mission"
+                        aria-current={pathname === '/mission' ? 'page' : undefined}
+                        style={{
+                            ...navPill,
                             background: pathname === '/mission' ? 'var(--primary)' : 'transparent',
                             color: pathname === '/mission' ? 'white' : 'var(--text-secondary)',
-                            borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem', fontWeight: 600,
-                            transition: 'all 0.2s'
                         }}
                     >
-                        <MapPin size={16} /> <span className="hide-on-tablet">Routine Planner</span>
-                    </button>
-                </div>
+                        <MapPin size={16} aria-hidden />
+                        <span className="hide-on-tablet">Routine Planner</span>
+                    </Link>
+                    <Link
+                        href="/admin/current-market"
+                        aria-current={pathname.startsWith('/admin') ? 'page' : undefined}
+                        style={{
+                            ...navPill,
+                            background: pathname.startsWith('/admin') ? 'var(--primary)' : 'transparent',
+                            color: pathname.startsWith('/admin') ? 'white' : 'var(--text-secondary)',
+                        }}
+                    >
+                        <Database size={16} aria-hidden />
+                        <span className="hide-on-tablet">Market DB</span>
+                    </Link>
+                </nav>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -241,24 +253,23 @@ export default function Header() {
             {/* Mobile Nav Overlay */}
             {isMobileNavOpen && (
                 <div style={{ position: 'fixed', top: 'var(--header-height)', left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 10002 }} onClick={() => setIsMobileNavOpen(false)}>
-                    <div style={{ background: 'var(--bg-secondary)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid var(--bg-tertiary)' }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>View Mode</div>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button onClick={() => { setViewMode('split'); setIsMobileNavOpen(false); }} style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: viewMode === 'split' ? 'var(--primary)' : 'var(--bg-primary)', color: viewMode === 'split' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                <LayoutTemplate size={18} /> Split
-                            </button>
-                            <button onClick={() => { setViewMode('table'); setIsMobileNavOpen(false); }} style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: viewMode === 'table' ? 'var(--primary)' : 'var(--bg-primary)', color: viewMode === 'table' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                <TableIcon size={18} /> Table
-                            </button>
-                        </div>
-                        <div style={{ height: '1px', background: 'var(--bg-tertiary)', margin: '0.5rem 0' }} />
-                        <button onClick={() => { setShowFilters(!showFilters); setIsMobileNavOpen(false); }} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: showFilters ? 'var(--primary)' : 'var(--bg-primary)', color: showFilters ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                            <SlidersHorizontal size={18} /> {showFilters ? 'Hide Filters' : 'Show Filters'}
-                        </button>
-                        <button onClick={() => { router.push('/mission'); setIsMobileNavOpen(false); }} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: pathname === '/mission' ? 'var(--primary)' : 'var(--bg-primary)', color: pathname === '/mission' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                            <MapPin size={18} /> {pathname === '/mission' ? 'Active Planner' : 'Routine Planner'}
-                        </button>
-                    </div>
+                    <nav style={{ background: 'var(--bg-secondary)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid var(--bg-tertiary)' }} onClick={e => e.stopPropagation()} aria-label="Workspace">
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Workspace</div>
+                        <Link href="/" onClick={() => setIsMobileNavOpen(false)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: pathname === '/' ? 'var(--primary)' : 'var(--bg-primary)', color: pathname === '/' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
+                            <Layers size={18} /> Inventory
+                        </Link>
+                        <Link href="/mission" onClick={() => setIsMobileNavOpen(false)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: pathname === '/mission' ? 'var(--primary)' : 'var(--bg-primary)', color: pathname === '/mission' ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
+                            <MapPin size={18} /> Routine Planner
+                        </Link>
+                        <Link href="/admin/current-market" onClick={() => setIsMobileNavOpen(false)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--bg-tertiary)', background: pathname.startsWith('/admin') ? 'var(--primary)' : 'var(--bg-primary)', color: pathname.startsWith('/admin') ? 'white' : 'var(--text-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
+                            <Database size={18} /> Market DB
+                        </Link>
+                        {pathname === '/' ? (
+                            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.45 }}>
+                                Split / table layout and fleet filters live on the Inventory page toolbar below the header.
+                            </p>
+                        ) : null}
+                    </nav>
                 </div>
             )}
 

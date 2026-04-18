@@ -1,8 +1,11 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Aircraft } from '@/types';
 import styles from './AircraftTable.module.css';
+import { useListingDetailModal } from './ListingDetailModalContext';
 
 interface Props {
   data: Aircraft[];
@@ -31,6 +34,8 @@ const getHoursStyle = (hours: number) : string => {
 };
 
 export default function AircraftTable({ data }: Props) {
+  const { openListingDetail } = useListingDetailModal();
+
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -79,9 +84,18 @@ export default function AircraftTable({ data }: Props) {
               <td className={styles.td}>{item.base}</td>
               <td className={`${styles.td} ${styles.alignRight}`}>{item.dom}</td>
               <td className={styles.td}>
-                <Link href={`/inventory/${item.id}`} className={styles.actionBtn}>
-                   View Details
-                </Link>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.35rem' }}>
+                  <Link href={`/inventory/${item.id}`} className={styles.actionBtn}>
+                    View Details
+                  </Link>
+                  <button
+                    type="button"
+                    className={styles.marketSheetLink}
+                    onClick={() => openListingDetail(item.id)}
+                  >
+                    Market listing
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

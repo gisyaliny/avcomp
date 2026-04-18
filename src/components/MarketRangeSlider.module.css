@@ -1,0 +1,108 @@
+.wrap {
+  width: 100%;
+  min-width: 0;
+  padding-top: 0.35rem;
+  position: relative;
+  isolation: isolate;
+}
+
+.wrapCompact {
+  padding-top: 0;
+}
+
+.label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.65rem;
+  padding-right: 0.25rem;
+  line-height: 1.35;
+}
+
+.wrapCompact .label {
+  margin-bottom: 0.55rem;
+  font-size: 0.65rem;
+  line-height: 1.35;
+}
+
+.sliderTarget {
+  height: 24px;
+  /* Tooltips sit BELOW handles — only need a little gap under the title */
+  margin: 0.35rem 0 2.35rem;
+  position: relative;
+  z-index: 1;
+}
+
+.wrapCompact .sliderTarget {
+  margin: 0.25rem 0 2.15rem;
+}
+
+@media (min-width: 1100px) {
+  .wrapCompact .sliderTarget {
+    margin-bottom: 2.1rem;
+  }
+}
+
+/* nouislider theme — teal range like reference */
+.wrap :global(.noUi-target) {
+  background: #e5e7eb;
+  border: none;
+  border-radius: 999px;
+  box-shadow: none;
+  position: relative;
+  z-index: 1;
+}
+
+.wrap :global(.noUi-connects) {
+  border-radius: 999px;
+}
+
+.wrap :global(.noUi-connect) {
+  background: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.wrap :global(.noUi-horizontal) {
+  height: 8px;
+}
+
+.wrap :global(.noUi-handle) {
+  width: 22px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #c4c2bc;
+  background: #fafaf9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  top: -11px;
+  right: -11px;
+  cursor: grab;
+}
+
+.wrap :global(.noUi-handle:before),
+.wrap :global(.noUi-handle:after) {
+  display: none;
+}
+
+.wrap :global(.noUi-handle:active) {
+  cursor: grabbing;
+}
+
+.wrap :global(.noUi-tooltip) {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--text-primary);
+}
+
+/* Place value boxes below the handles so titles are never covered */
+.wrap :global(.noUi-horizontal .noUi-tooltip) {
+  bottom: auto !important;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 0);
+}

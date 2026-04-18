@@ -12,6 +12,7 @@ import { Share, Heart, ArrowLeft, Download, Check, X, ChevronLeft, ChevronRight,
 import { useAuth } from '@/components/AuthContext';
 import { useUI } from '@/components/UIContext';
 import ComparisonModal from '@/components/ComparisonModal';
+import { useListingDetailModal } from '@/components/ListingDetailModalContext';
 import { Aircraft } from '@/types';
 
 const formatCurrency = (val: number) => {
@@ -32,6 +33,7 @@ export default function AircraftDetailClient({ id }: { id: string }) {
     const [showComparison, setShowComparison] = useState(false);
     const { user, toggleFavorite, checkIsFavorite } = useAuth();
     const { compareList, toggleCompare, setCompareList } = useUI();
+    const { openListingDetail } = useListingDetailModal();
     const router = useRouter();
 
     // Track scroll for "Back to Top" button
@@ -108,8 +110,24 @@ export default function AircraftDetailClient({ id }: { id: string }) {
                 <button onClick={() => router.back()} className={styles.backBtn}>
                     <ArrowLeft size={18} /> Back
                 </button>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                      <span className={styles.stickyPrice}>{formatCurrency(aircraft.askPrice)}</span>
+                     <button
+                        type="button"
+                        onClick={() => openListingDetail(aircraft.id)}
+                        style={{
+                            padding: '0.65rem 1rem',
+                            background: 'transparent',
+                            color: 'var(--primary)',
+                            border: '1px solid var(--bg-tertiary)',
+                            borderRadius: 'var(--radius-sm)',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                        }}
+                     >
+                        Market listing
+                     </button>
                      <button 
                         className={styles.primaryBtn}
                         onClick={() => setShowContact(true)}

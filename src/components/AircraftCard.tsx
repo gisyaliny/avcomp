@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { Aircraft } from '@/types';
 import styles from './AircraftCard.module.css';
 import { Plane, Clock, MapPin, Heart } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import { useListingDetailModal } from './ListingDetailModalContext';
 
 interface Props {
   data: Aircraft;
@@ -26,6 +29,7 @@ const formatCurrency = (val: number) => {
 
 function AircraftCard({ data, active, onClick, route }: Props) {
   const { user, toggleFavorite, checkIsFavorite } = useAuth();
+  const { openListingDetail } = useListingDetailModal();
   const isFavorite = checkIsFavorite(data.id);
   
   const cruiseSpeed = data.specs?.performance?.maxCruiseSpeed || 450;
@@ -150,6 +154,17 @@ function AircraftCard({ data, active, onClick, route }: Props) {
                 <span key={i} className={styles.badge}>{h}</span>
             ))}
         </div>
+
+        <button
+          type="button"
+          className={styles.marketListingBtn}
+          onClick={(e) => {
+            e.stopPropagation();
+            openListingDetail(data.id);
+          }}
+        >
+          Market listing sheet
+        </button>
       </div>
     </div>
   );

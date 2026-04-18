@@ -264,6 +264,55 @@ export default function InventoryExplorer() {
 
   return (
     <main className={`${styles.container} ${mobileMapOpen ? styles.mapActive : ''}`}>
+      <div className={styles.inventoryToolbar} role="toolbar" aria-label="Fleet layout and filters">
+        <div className={styles.inventoryToolbarInner}>
+          <button
+            type="button"
+            className={styles.inventoryToolbarBtn}
+            onClick={() => setViewMode('split')}
+            style={{
+              background: viewMode === 'split' ? 'var(--primary)' : 'transparent',
+              color: viewMode === 'split' ? 'white' : 'var(--text-secondary)',
+            }}
+          >
+            <LayoutTemplate size={16} aria-hidden />
+            <span>Split view</span>
+          </button>
+          <button
+            type="button"
+            className={styles.inventoryToolbarBtn}
+            onClick={() => setViewMode('table')}
+            style={{
+              background: viewMode === 'table' ? 'var(--primary)' : 'transparent',
+              color: viewMode === 'table' ? 'white' : 'var(--text-secondary)',
+            }}
+          >
+            <TableIcon size={16} aria-hidden />
+            <span>Table view</span>
+          </button>
+          <div
+            style={{ width: '1px', height: '18px', background: 'var(--bg-tertiary)', margin: '0 2px' }}
+            aria-hidden
+          />
+          <button
+            type="button"
+            className={styles.inventoryToolbarBtn}
+            onClick={() => setShowFilters(!showFilters)}
+            style={{
+              background: showFilters ? 'var(--primary)' : 'transparent',
+              color: showFilters ? 'white' : 'var(--text-secondary)',
+            }}
+          >
+            <SlidersHorizontal size={16} aria-hidden />
+            <span>Filters</span>
+          </button>
+        </div>
+        <span className={styles.inventoryToolbarHint}>
+          Sheet layout &amp; listing compare: use Market DB.
+        </span>
+      </div>
+
+      <div className={styles.inventorySplit}>
       {/* Map Panel (Left) */}
       <section className={styles.mapPanel}>
         {/* Floating Filters Bar on Map */}
@@ -778,6 +827,7 @@ export default function InventoryExplorer() {
             )}
         </div>
       </aside>
+      </div>
 
       {/* Mobile Toggle Button */}
       <button 

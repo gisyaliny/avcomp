@@ -93,9 +93,13 @@ body {
   overflow: hidden;
 }
 
+/* Allow long pages (Market DB compare, admin tables) to scroll. Flex item needs min-height:0
+   so overflow-y can shrink below content size; otherwise content is clipped with no scrollbar. */
 .main-content {
   flex: 1;
-  overflow: hidden;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -124,5 +128,58 @@ h6 {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/*
+ * Print / PDF: class name must stay the literal `noPrint` (global), not CSS-module-scoped,
+ * because components use className="noPrint" alongside hashed module classes.
+ */
+@media print {
+  .noPrint {
+    display: none !important;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+
+  body {
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  /* Current market listings: only the data sheet prints — filters, nav chrome hidden */
+  body:has(#current-market-sheet) .layout-container > header,
+  body:has(#current-market-sheet) .layout-container > footer {
+    display: none !important;
+  }
+
+  body:has(#current-market-sheet) .main-content {
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  body:has(#current-market-sheet) * {
+    visibility: hidden;
+  }
+
+  body:has(#current-market-sheet) #current-market-sheet,
+  body:has(#current-market-sheet) #current-market-sheet * {
+    visibility: visible;
+  }
+
+  body:has(#current-market-sheet) #current-market-sheet {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    overflow: visible !important;
+    display: block !important;
   }
 }

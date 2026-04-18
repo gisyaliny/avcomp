@@ -1,0 +1,809 @@
+{
+  "meta": {
+    "sourceSheet": "Current Market XLS+ 02.03.26",
+    "sourceFile": "Citation Excel_XLS_XLS+ Market Summary_10.27.22.xlsx",
+    "exportedRecordCount": 22,
+    "databaseKind": "unified",
+    "note": "Single source for admin sheet + public marketplace; askPriceHistory may be demo/mock."
+  },
+  "listings": [
+    {
+      "id": "citation-5524",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS",
+      "sn": 5524,
+      "yod": 2004,
+      "reg": "N546CS",
+      "location": "US-TX",
+      "askTakeRaw": 4300000,
+      "askTakeUsd": 4300000,
+      "dom": 134,
+      "tsn": 9260,
+      "csn": 6446,
+      "apuTsn": 4070,
+      "engineProg": "ESP-G Lte",
+      "partsProg": "PP",
+      "apuProg": "AA",
+      "inspection48mo": "2029-04-01T00:00:00",
+      "paintYear": 2013,
+      "interiorYear": 2013,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$4.30M",
+          "amountUsd": 4300000
+        }
+      ]
+    },
+    {
+      "id": "citation-5581",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS",
+      "sn": 5581,
+      "yod": 2005,
+      "reg": "N577PS",
+      "location": "US-SC",
+      "askTakeRaw": 4200000,
+      "askTakeUsd": 4200000,
+      "dom": 89,
+      "tsn": 4770,
+      "csn": 3874,
+      "apuTsn": 2136,
+      "engineProg": "None",
+      "partsProg": "None",
+      "apuProg": "None",
+      "inspection48mo": "2027-04-01T00:00:00",
+      "paintYear": 2015,
+      "interiorYear": 2005,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-01-10",
+          "endDate": "2023-09-01",
+          "priceDisplay": "$4.28M",
+          "amountUsd": 4284000
+        },
+        {
+          "startDate": "2023-09-01",
+          "endDate": "2024-04-01",
+          "priceDisplay": "$4.35M",
+          "amountUsd": 4350000,
+          "reductionFromPriorUsd": 66000
+        },
+        {
+          "startDate": "2024-04-01",
+          "endDate": null,
+          "priceDisplay": "$4.20M",
+          "amountUsd": 4200000,
+          "reductionFromPriorUsd": -150000
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: 2 adjustments (mock)"
+    },
+    {
+      "id": "citation-5698",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS",
+      "sn": 5698,
+      "yod": 2007,
+      "reg": "N915TM",
+      "location": "US-FL",
+      "askTakeRaw": 6490000,
+      "askTakeUsd": 6490000,
+      "dom": 60,
+      "tsn": 4401,
+      "csn": 3812,
+      "apuTsn": 1642,
+      "engineProg": "PA+",
+      "partsProg": "None",
+      "apuProg": "AA",
+      "inspection48mo": "2027-04-01T00:00:00",
+      "paintYear": 2019,
+      "interiorYear": 2007,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$6.49M",
+          "amountUsd": 6490000
+        }
+      ]
+    },
+    {
+      "id": "citation-5734",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS",
+      "sn": 5734,
+      "yod": 2007,
+      "reg": "N411EC",
+      "location": "US-TX",
+      "askTakeRaw": 6695000,
+      "askTakeUsd": 6695000,
+      "dom": 96,
+      "tsn": 4615,
+      "csn": 4381,
+      "apuTsn": 3290,
+      "engineProg": "PA+",
+      "partsProg": "None",
+      "apuProg": "AA",
+      "inspection48mo": "2027-07-01T00:00:00",
+      "paintYear": 2019,
+      "interiorYear": 2019,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$6.70M",
+          "amountUsd": 6695000
+        }
+      ]
+    },
+    {
+      "id": "citation-5747",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS",
+      "sn": 5747,
+      "yod": 2008,
+      "reg": "N328RP",
+      "location": "US-GA",
+      "askTakeRaw": "M/O",
+      "askTakeUsd": null,
+      "dom": 50,
+      "tsn": 11874,
+      "csn": 7981,
+      "apuTsn": 6824,
+      "engineProg": "ESP-G",
+      "partsProg": "None",
+      "apuProg": "MSP-G",
+      "inspection48mo": "2027-10-01T00:00:00",
+      "paintYear": 2024,
+      "interiorYear": 2017,
+      "pax": 6,
+      "askPriceHistory": [
+        {
+          "startDate": "2019-10-15",
+          "endDate": "2019-12-05",
+          "priceDisplay": "$12,990,000",
+          "amountUsd": 12990000
+        },
+        {
+          "startDate": "2019-12-05",
+          "endDate": "2020-09-05",
+          "priceDisplay": "$12,750,000",
+          "amountUsd": 12750000,
+          "reductionFromPriorUsd": -240000
+        },
+        {
+          "startDate": "2020-09-05",
+          "endDate": null,
+          "priceDisplay": "Make Offer (M/O)",
+          "amountUsd": null
+        }
+      ],
+      "askPriceHistoryFooter": "Total Price Reductions: 1 Time (09/05/19)"
+    },
+    {
+      "id": "citation-6050",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6050,
+      "yod": 2009,
+      "reg": "RP-C8568",
+      "location": "Philippines",
+      "askTakeRaw": 6500000,
+      "askTakeUsd": 6500000,
+      "dom": 5,
+      "tsn": 3511,
+      "csn": 3226,
+      "apuTsn": 3141,
+      "engineProg": "None",
+      "partsProg": "PP",
+      "apuProg": "None",
+      "inspection48mo": "2025-10-01T00:00:00",
+      "paintYear": 2009,
+      "interiorYear": 2009,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-06-01",
+          "endDate": "2024-02-15",
+          "priceDisplay": "$6.76M",
+          "amountUsd": 6760000
+        },
+        {
+          "startDate": "2024-02-15",
+          "endDate": null,
+          "priceDisplay": "$6.50M",
+          "amountUsd": 6500000,
+          "reductionFromPriorUsd": -260000
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: 1 reduction vs prior ask \u2014 S/N 6050"
+    },
+    {
+      "id": "citation-6063",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6063,
+      "yod": 2010,
+      "reg": "N533CC",
+      "location": "US-NC",
+      "askTakeRaw": 6890000,
+      "askTakeUsd": 6890000,
+      "dom": 49,
+      "tsn": 5484,
+      "csn": 6766,
+      "apuTsn": 2982,
+      "engineProg": "None",
+      "partsProg": "PP",
+      "apuProg": "None",
+      "inspection48mo": "2026-04-01T00:00:00",
+      "paintYear": 2010,
+      "interiorYear": 2010,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-01-10",
+          "endDate": "2023-09-01",
+          "priceDisplay": "$7.03M",
+          "amountUsd": 7027800
+        },
+        {
+          "startDate": "2023-09-01",
+          "endDate": "2024-04-01",
+          "priceDisplay": "$7.04M",
+          "amountUsd": 7040000,
+          "reductionFromPriorUsd": 12200
+        },
+        {
+          "startDate": "2024-04-01",
+          "endDate": null,
+          "priceDisplay": "$6.89M",
+          "amountUsd": 6890000,
+          "reductionFromPriorUsd": -150000
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: 2 adjustments (mock)"
+    },
+    {
+      "id": "citation-6068",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6068,
+      "yod": 2011,
+      "reg": "N82GT",
+      "location": "Honduras",
+      "askTakeRaw": 7500000,
+      "askTakeUsd": 7500000,
+      "dom": 126,
+      "tsn": 3022,
+      "csn": 2406,
+      "apuTsn": 1207,
+      "engineProg": "PA",
+      "partsProg": "None",
+      "apuProg": "AA",
+      "inspection48mo": "2029-03-01T00:00:00",
+      "paintYear": 2011,
+      "interiorYear": 2011,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$7.50M",
+          "amountUsd": 7500000
+        }
+      ]
+    },
+    {
+      "id": "citation-6070",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6070,
+      "yod": 2010,
+      "reg": "N534CC",
+      "location": "US-OR",
+      "askTakeRaw": 6895000,
+      "askTakeUsd": 6895000,
+      "dom": 49,
+      "tsn": 6793,
+      "csn": 7244,
+      "apuTsn": 6204,
+      "engineProg": "PA",
+      "partsProg": "PP",
+      "apuProg": "None",
+      "inspection48mo": "2029-09-01T00:00:00",
+      "paintYear": 2010,
+      "interiorYear": 2010,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$6.89M",
+          "amountUsd": 6895000
+        }
+      ]
+    },
+    {
+      "id": "citation-6126",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6126,
+      "yod": 2012,
+      "reg": "N933MR",
+      "location": "US-PA",
+      "askTakeRaw": "M/O",
+      "askTakeUsd": null,
+      "dom": 119,
+      "tsn": 4552,
+      "csn": 3198,
+      "apuTsn": 2388,
+      "engineProg": "PA+",
+      "partsProg": "None",
+      "apuProg": "AA",
+      "inspection48mo": "2028-06-01T00:00:00",
+      "paintYear": 2023,
+      "interiorYear": 2012,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-03-01",
+          "endDate": "2024-01-20",
+          "priceDisplay": "$7.15M",
+          "amountUsd": 7150000
+        },
+        {
+          "startDate": "2024-01-20",
+          "endDate": null,
+          "priceDisplay": "Make Offer (M/O)",
+          "amountUsd": null,
+          "reductionFromPriorUsd": null
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: moved to M/O \u2014 XLS+ \u00b7 S/N 6126"
+    },
+    {
+      "id": "citation-6134",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6134,
+      "yod": 2013,
+      "reg": "CS-RLI",
+      "location": "UK",
+      "askTakeRaw": 8250000,
+      "askTakeUsd": 8250000,
+      "dom": 812,
+      "tsn": 2300,
+      "csn": 2200,
+      "apuTsn": "-",
+      "engineProg": "JSSI",
+      "partsProg": "PP",
+      "apuProg": "JSSI",
+      "inspection48mo": "2029-04-01T00:00:00",
+      "paintYear": 2013,
+      "interiorYear": 2013,
+      "pax": 7,
+      "askPriceHistory": [
+        {
+          "startDate": "2020-06-01",
+          "endDate": "2021-01-15",
+          "priceDisplay": "$8,450,000",
+          "amountUsd": 8450000
+        },
+        {
+          "startDate": "2021-01-15",
+          "endDate": "2021-03-12",
+          "priceDisplay": "$8,100,000",
+          "amountUsd": 8100000,
+          "reductionFromPriorUsd": -350000
+        },
+        {
+          "startDate": "2021-03-12",
+          "endDate": null,
+          "priceDisplay": "$8,250,000",
+          "amountUsd": 8250000,
+          "reductionFromPriorUsd": 150000
+        }
+      ],
+      "askPriceHistoryFooter": "Total Price Reductions: 2 Times \u2014 last 03/12/21"
+    },
+    {
+      "id": "citation-6171",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6171,
+      "yod": 2014,
+      "reg": "7T-VNC",
+      "location": "Algeria",
+      "askTakeRaw": "M/O",
+      "askTakeUsd": null,
+      "dom": 84,
+      "tsn": 4627,
+      "csn": 3600,
+      "apuTsn": 2032,
+      "engineProg": "PA+",
+      "partsProg": "PA",
+      "apuProg": "AA",
+      "inspection48mo": "2029-04-01T00:00:00",
+      "paintYear": 2014,
+      "interiorYear": 2014,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-03-01",
+          "endDate": "2024-01-20",
+          "priceDisplay": "$7.03M",
+          "amountUsd": 7025000
+        },
+        {
+          "startDate": "2024-01-20",
+          "endDate": null,
+          "priceDisplay": "Make Offer (M/O)",
+          "amountUsd": null,
+          "reductionFromPriorUsd": null
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: moved to M/O \u2014 XLS+ \u00b7 S/N 6171"
+    },
+    {
+      "id": "citation-6200",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6200,
+      "yod": 2015,
+      "reg": "N694PH",
+      "location": "US-NV",
+      "askTakeRaw": "M/O",
+      "askTakeUsd": null,
+      "dom": 35,
+      "tsn": 2936,
+      "csn": 1954,
+      "apuTsn": 1533,
+      "engineProg": "ESP-G",
+      "partsProg": "CASP",
+      "apuProg": "None",
+      "inspection48mo": "2027-10-01T00:00:00",
+      "paintYear": 2015,
+      "interiorYear": 2015,
+      "pax": 7,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-03-01",
+          "endDate": "2024-01-20",
+          "priceDisplay": "$6.50M",
+          "amountUsd": 6500000
+        },
+        {
+          "startDate": "2024-01-20",
+          "endDate": null,
+          "priceDisplay": "Make Offer (M/O)",
+          "amountUsd": null,
+          "reductionFromPriorUsd": null
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: moved to M/O \u2014 XLS+ \u00b7 S/N 6200"
+    },
+    {
+      "id": "citation-6235",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6235,
+      "yod": 2017,
+      "reg": "N635XL",
+      "location": "US-NY",
+      "askTakeRaw": "M/O",
+      "askTakeUsd": null,
+      "dom": 1,
+      "tsn": 1377,
+      "csn": 1104,
+      "apuTsn": 967,
+      "engineProg": "PA+",
+      "partsProg": "None",
+      "apuProg": "AA",
+      "inspection48mo": "2029-11-01T00:00:00",
+      "paintYear": 2017,
+      "interiorYear": 2017,
+      "pax": 8,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-03-01",
+          "endDate": "2024-01-20",
+          "priceDisplay": "$7.38M",
+          "amountUsd": 7375000
+        },
+        {
+          "startDate": "2024-01-20",
+          "endDate": null,
+          "priceDisplay": "Make Offer (M/O)",
+          "amountUsd": null,
+          "reductionFromPriorUsd": null
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: moved to M/O \u2014 XLS+ \u00b7 S/N 6235"
+    },
+    {
+      "id": "citation-6239",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6239,
+      "yod": 2017,
+      "reg": "D-CNNN",
+      "location": "Germany",
+      "askTakeRaw": 10000000,
+      "askTakeUsd": 10000000,
+      "dom": 180,
+      "tsn": 2312,
+      "csn": 2205,
+      "apuTsn": 1455,
+      "engineProg": "None",
+      "partsProg": "None",
+      "apuProg": "None",
+      "inspection48mo": "2025-11-01T00:00:00",
+      "paintYear": 2017,
+      "interiorYear": 2017,
+      "pax": 7,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$10M",
+          "amountUsd": 10000000
+        }
+      ]
+    },
+    {
+      "id": "citation-6311",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6311,
+      "yod": 2021,
+      "reg": "PS-MLV",
+      "location": "Brazil",
+      "askTakeRaw": 14300000,
+      "askTakeUsd": 14300000,
+      "dom": 152,
+      "tsn": 488,
+      "csn": "-",
+      "apuTsn": 88,
+      "engineProg": "PA+",
+      "partsProg": "PP",
+      "apuProg": "AA",
+      "inspection48mo": "2025-10-01T00:00:00",
+      "paintYear": 2021,
+      "interiorYear": 2021,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-06-01",
+          "endDate": "2024-02-15",
+          "priceDisplay": "$14.87M",
+          "amountUsd": 14872000
+        },
+        {
+          "startDate": "2024-02-15",
+          "endDate": null,
+          "priceDisplay": "$14.30M",
+          "amountUsd": 14300000,
+          "reductionFromPriorUsd": -572000
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: 1 reduction vs prior ask \u2014 S/N 6311"
+    },
+    {
+      "id": "citation-6338",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6338,
+      "yod": 2022,
+      "reg": "N338HR",
+      "location": "US-IA",
+      "askTakeRaw": 15490000,
+      "askTakeUsd": 15490000,
+      "dom": 64,
+      "tsn": 799,
+      "csn": 731,
+      "apuTsn": 334,
+      "engineProg": "PA+",
+      "partsProg": "None",
+      "apuProg": "AA",
+      "inspection48mo": "2027-02-01T00:00:00",
+      "paintYear": 2022,
+      "interiorYear": 2022,
+      "pax": 12,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-01-10",
+          "endDate": "2023-09-01",
+          "priceDisplay": "$15.80M",
+          "amountUsd": 15799800
+        },
+        {
+          "startDate": "2023-09-01",
+          "endDate": "2024-04-01",
+          "priceDisplay": "$15.64M",
+          "amountUsd": 15640000,
+          "reductionFromPriorUsd": -159800
+        },
+        {
+          "startDate": "2024-04-01",
+          "endDate": null,
+          "priceDisplay": "$15.49M",
+          "amountUsd": 15490000,
+          "reductionFromPriorUsd": -150000
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: 2 adjustments (mock)"
+    },
+    {
+      "id": "citation-6341",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6341,
+      "yod": 2023,
+      "reg": "N504KH",
+      "location": "USA",
+      "askTakeRaw": 15150000,
+      "askTakeUsd": 15150000,
+      "dom": 784,
+      "tsn": 215,
+      "csn": 142,
+      "apuTsn": 114,
+      "engineProg": "PA+",
+      "partsProg": "PP",
+      "apuProg": "AA",
+      "inspection48mo": "2027-04-01T00:00:00",
+      "paintYear": 2023,
+      "interiorYear": 2023,
+      "pax": 8,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$15.15M",
+          "amountUsd": 15150000
+        }
+      ]
+    },
+    {
+      "id": "citation-6355",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6355,
+      "yod": 2024,
+      "reg": "N504WG",
+      "location": "US-FL",
+      "askTakeRaw": 16850000,
+      "askTakeUsd": 16850000,
+      "dom": 447,
+      "tsn": 441,
+      "csn": 273,
+      "apuTsn": 301,
+      "engineProg": "JSSI",
+      "partsProg": "None",
+      "apuProg": "JSSI",
+      "inspection48mo": "2028-03-01T00:00:00",
+      "paintYear": 2024,
+      "interiorYear": 2024,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$16.85M",
+          "amountUsd": 16850000
+        }
+      ]
+    },
+    {
+      "id": "citation-6357",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6357,
+      "yod": 2024,
+      "reg": "N831GL",
+      "location": "US-NC",
+      "askTakeRaw": 15995000,
+      "askTakeUsd": 15995000,
+      "dom": 90,
+      "tsn": 600,
+      "csn": 371,
+      "apuTsn": "-",
+      "engineProg": "-",
+      "partsProg": "-",
+      "apuProg": "-",
+      "inspection48mo": "2028-05-01T00:00:00",
+      "paintYear": 2024,
+      "interiorYear": 2024,
+      "pax": 8,
+      "askPriceHistory": [
+        {
+          "startDate": "2024-01-01",
+          "endDate": null,
+          "priceDisplay": "$15.99M",
+          "amountUsd": 15995000
+        }
+      ]
+    },
+    {
+      "id": "citation-6378",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6378,
+      "yod": 2025,
+      "reg": "N540PJ",
+      "location": "US-PA",
+      "askTakeRaw": 16500000,
+      "askTakeUsd": 16500000,
+      "dom": 88,
+      "tsn": 26,
+      "csn": 30,
+      "apuTsn": "-",
+      "engineProg": "PA+",
+      "partsProg": "PP",
+      "apuProg": "AA",
+      "inspection48mo": "2029-08-01T00:00:00",
+      "paintYear": 2025,
+      "interiorYear": 2025,
+      "pax": 9,
+      "askPriceHistory": [
+        {
+          "startDate": "2023-06-01",
+          "endDate": "2024-02-15",
+          "priceDisplay": "$17.16M",
+          "amountUsd": 17160000
+        },
+        {
+          "startDate": "2024-02-15",
+          "endDate": null,
+          "priceDisplay": "$16.50M",
+          "amountUsd": 16500000,
+          "reductionFromPriorUsd": -660000
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: 1 reduction vs prior ask \u2014 S/N 6378"
+    },
+    {
+      "id": "citation-6504",
+      "programModel": "Citation Excel / XLS / XLS+",
+      "variant": "XLS+",
+      "sn": 6504,
+      "yod": 2025,
+      "reg": "N314CW",
+      "location": "-",
+      "askTakeRaw": "M/O",
+      "askTakeUsd": null,
+      "dom": 12,
+      "tsn": "-",
+      "csn": "-",
+      "apuTsn": "-",
+      "engineProg": "-",
+      "partsProg": "-",
+      "apuProg": "-",
+      "inspection48mo": "-",
+      "paintYear": "-",
+      "interiorYear": "-",
+      "pax": "-",
+      "askPriceHistory": [
+        {
+          "startDate": "2023-03-01",
+          "endDate": "2024-01-20",
+          "priceDisplay": "$6.60M",
+          "amountUsd": 6600000
+        },
+        {
+          "startDate": "2024-01-20",
+          "endDate": null,
+          "priceDisplay": "Make Offer (M/O)",
+          "amountUsd": null,
+          "reductionFromPriorUsd": null
+        }
+      ],
+      "askPriceHistoryFooter": "Demo: moved to M/O \u2014 XLS+ \u00b7 S/N 6504"
+    }
+  ]
+}

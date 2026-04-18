@@ -6,6 +6,7 @@ import React from 'react';
 import { Suspense } from 'react';
 import { AuthProvider } from './AuthContext';
 import { UIProvider } from './UIContext';
+import { ListingDetailModalProvider } from './ListingDetailModalContext';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <Suspense fallback={null}>
             <UIProvider>
                 <AuthProvider>
-                    {children}
+                    <ListingDetailModalProvider>{children}</ListingDetailModalProvider>
                 </AuthProvider>
             </UIProvider>
         </Suspense>

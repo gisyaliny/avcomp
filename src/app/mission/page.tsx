@@ -10,10 +10,12 @@ import AircraftCard from '@/components/AircraftCard';
 import AirportAutocomplete from '@/components/AirportAutocomplete';
 import { Aircraft } from '@/types';
 import Link from 'next/link';
+import { useListingDetailModal } from '@/components/ListingDetailModalContext';
 
 function MissionResultsContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { openListingDetail } = useListingDetailModal();
     
     const originCode = searchParams.get('origin') || 'TEB';
     const destCode = searchParams.get('dest');
@@ -354,24 +356,48 @@ function MissionResultsContent() {
                                                     {((ac.rangeNm - (distance || 0))).toLocaleString()} NM
                                                 </td>
                                                 <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            router.push(`/inventory/${ac.id}`);
-                                                        }}
-                                                        style={{
-                                                            padding: '0.5rem 1rem',
-                                                            background: 'var(--primary)',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '8px',
-                                                            fontWeight: 600,
-                                                            cursor: 'pointer',
-                                                            fontSize: '0.85rem'
-                                                        }}
-                                                    >
-                                                        View Details
-                                                    </button>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', alignItems: 'center' }}>
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                router.push(`/inventory/${ac.id}`);
+                                                            }}
+                                                            style={{
+                                                                padding: '0.5rem 1rem',
+                                                                background: 'var(--primary)',
+                                                                color: 'white',
+                                                                border: 'none',
+                                                                borderRadius: '8px',
+                                                                fontWeight: 600,
+                                                                cursor: 'pointer',
+                                                                fontSize: '0.85rem',
+                                                                width: '100%',
+                                                            }}
+                                                        >
+                                                            View Details
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                openListingDetail(ac.id);
+                                                            }}
+                                                            style={{
+                                                                padding: '0.35rem 0.65rem',
+                                                                background: 'transparent',
+                                                                color: 'var(--primary)',
+                                                                border: '1px solid var(--bg-tertiary)',
+                                                                borderRadius: '8px',
+                                                                fontWeight: 600,
+                                                                cursor: 'pointer',
+                                                                fontSize: '0.78rem',
+                                                                width: '100%',
+                                                            }}
+                                                        >
+                                                            Market listing
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );

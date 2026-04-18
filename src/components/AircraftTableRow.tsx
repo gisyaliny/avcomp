@@ -5,6 +5,7 @@ import tableStyles from './AircraftTable.module.css';
 import { Aircraft } from '@/types';
 import { Heart } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import { useListingDetailModal } from './ListingDetailModalContext';
 
 interface Props {
     aircraft: Aircraft;
@@ -24,6 +25,7 @@ interface Props {
 
 const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare, sortKey, isTable = false, route }: Props) => {
     const { user, toggleFavorite, checkIsFavorite } = useAuth();
+    const { openListingDetail } = useListingDetailModal();
     const isFavorite = checkIsFavorite(aircraft.id);
 
     const cruiseSpeed = aircraft.specs?.performance?.maxCruiseSpeed || 450;
@@ -93,8 +95,29 @@ const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare,
                     <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--primary)' }}>
                         {aircraft.yom} {aircraft.make} {aircraft.model}
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', fontFamily: 'monospace' }}>
-                        SN: {aircraft.sn}
+                    <div
+                        style={{
+                            fontSize: '0.8rem',
+                            color: 'var(--text-muted)',
+                            marginTop: '0.25rem',
+                            fontFamily: 'monospace',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <span>SN: {aircraft.sn}</span>
+                        <button
+                            type="button"
+                            className={tableStyles.marketSheetLink}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openListingDetail(aircraft.id);
+                            }}
+                        >
+                            Market listing
+                        </button>
                     </div>
                 </td>
 
@@ -173,7 +196,30 @@ const AircraftTableRow = ({ aircraft, selected, onSelect, isCompared, onCompare,
                 {/* Aircraft Info */}
                 <div style={{ color: sortKey === 'make' ? 'var(--primary)' : 'inherit' }}>
                     <div style={{ fontWeight: 700, fontSize: '0.95rem', color: sortKey === 'make' ? 'var(--primary)' : 'var(--primary)' }}>{aircraft.yom} {aircraft.make} {aircraft.model}</div>
-                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem', fontFamily: 'monospace' }}>SN: {aircraft.sn}</div>
+                     <div
+                        style={{
+                            fontSize: '0.8rem',
+                            color: 'var(--text-muted)',
+                            marginTop: '0.25rem',
+                            fontFamily: 'monospace',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <span>SN: {aircraft.sn}</span>
+                        <button
+                            type="button"
+                            className={tableStyles.marketSheetLink}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openListingDetail(aircraft.id);
+                            }}
+                        >
+                            Market listing
+                        </button>
+                    </div>
                 </div>
 
                 {/* Price */}

@@ -26,18 +26,19 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     const [showFilters, setShowFilters] = useState(false);
     const [compareList, setCompareList] = useState<string[]>([]);
 
-    // Initial sync from URL
+    // `?view=` applies only to the inventory page (`/`). Other routes ignore it so Market DB URLs stay clean.
     useEffect(() => {
+        if (pathname !== '/') return;
         const mode = searchParams?.get('view') as ViewMode;
         if (mode && (mode === 'split' || mode === 'table')) {
             setViewModeState(mode);
         }
-    }, [searchParams]);
+    }, [searchParams, pathname]);
 
-    // Sync viewMode with URL
     const setViewMode = (mode: ViewMode) => {
         if (mode === viewMode) return;
         setViewModeState(mode);
+        if (pathname !== '/') return;
         const params = new URLSearchParams(searchParams?.toString() || '');
         if (mode === 'split') {
             params.delete('view');
@@ -50,11 +51,13 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const MAX_COMPARE = 6;
+
     const toggleCompare = (id: string) => {
-        setCompareList(prev => {
-            if (prev.includes(id)) return prev.filter(i => i !== id);
-            if (prev.length >= 4) {
-                alert("You can compare up to 4 aircraft.");
+        setCompareList((prev) => {
+            if (prev.includes(id)) return prev.filter((i) => i !== id);
+            if (prev.length >= MAX_COMPARE) {
+                alert(`You can compare up to ${MAX_COMPARE} aircraft.`);
                 return prev;
             }
             return [...prev, id];
